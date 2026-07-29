@@ -1,7 +1,7 @@
 <?php
 
-require_once 'config.php';
-require_once 'conexao.php';
+require_once 'config/config.php';
+require_once 'conexão/conexao.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -40,15 +40,15 @@ $con = Config::connect();
 
 $sql = "SELECT id, email, senha, nivel, nome
         FROM usuarios WHERE email='$login' ";
-        
+
 
 $stmt = $con->query($sql);
 
 $dados = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$loginCorreto= $dados['email']??'0';
-$senhaCorreta= $dados['senha']??'0';
-$dec = encrypt_secure($senhaCorreta,'d');
+$loginCorreto = $dados['email'] ?? '0';
+$senhaCorreta = $dados['senha'] ?? '0';
+$dec = encrypt_secure($senhaCorreta, 'd');
 
 
 if ($login !== $loginCorreto || $senha !== $dec) {
@@ -80,6 +80,7 @@ exit;
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,7 +89,7 @@ exit;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    
+
     <style>
         :root {
             --tp-dark: #0a0c10;
@@ -107,7 +108,7 @@ exit;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(255, 0, 85, 0.05) 0%, transparent 40%);
         }
@@ -161,81 +162,88 @@ exit;
             background: rgba(0, 240, 255, 0.1);
         }
 
-        .text-cyan { color: var(--tp-cyan) !important; }
-        .text-magenta { color: var(--tp-magenta) !important; }
+        .text-cyan {
+            color: var(--tp-cyan) !important;
+        }
+
+        .text-magenta {
+            color: var(--tp-magenta) !important;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container p-3">
-    <div class="login-card mx-auto p-4 p-md-5">
-        
-        <!-- Header / Logo -->
-        <div class="text-center mb-4">
-            <div class="d-flex justify-content-center align-items-center mb-2">
-                <i class="bi bi-cpu-fill text-cyan fs-2 me-2"></i>
-                <span class="fs-3 fw-bold tracking-wide">TECHNO<span class="text-magenta">PUNK</span></span>
+    <div class="container p-3">
+        <div class="login-card mx-auto p-4 p-md-5">
+
+            <!-- Header / Logo -->
+            <div class="text-center mb-4">
+                <div class="d-flex justify-content-center align-items-center mb-2">
+                    <i class="bi bi-cpu-fill text-cyan fs-2 me-2"></i>
+                    <span class="fs-3 fw-bold tracking-wide">TECHNO<span class="text-magenta">PUNK</span></span>
+                </div>
+                <span class="badge badge-cyber mb-2">Restricted Access // Core System</span>
+                <p class="text-muted small mb-0">Submundo Node Administrator Login</p>
             </div>
-            <span class="badge badge-cyber mb-2">Restricted Access // Core System</span>
-            <p class="text-muted small mb-0">Submundo Node Administrator Login</p>
+
+            <!-- Alerta de Erro -->
+            <?php if (!empty($erro)): ?>
+                <div class="alert alert-danger bg-transparent border-danger text-danger text-center small py-2 mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> <?= $erro ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Formulário de Login -->
+            <form action="loginadmin.php" method="POST">
+
+                <!-- Campo Usuário/E-mail -->
+                <div class="mb-3">
+                    <label for="usuario" class="form-label small text-uppercase text-muted fw-bold">E-mail / Node ID</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-terminal"></i></span>
+                        <input type="email" class="form-control" id="usuario" name="usuario" placeholder="admin@technopunk.io" required autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- Campo Senha -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label for="senha" class="form-label small text-uppercase text-muted fw-bold mb-0">Chave Neural (Senha)</label>
+                        <a href="#" class="small text-cyan text-decoration-none">Resetar?</a>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+                        <input type="password" class="form-control" id="senha" name="senha" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <!-- Manter Conectado -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input bg-dark border-secondary" type="checkbox" id="remember">
+                    <label class="form-check-label small text-muted" for="remember">
+                        Manter sessão ativa na rede
+                    </label>
+                </div>
+
+                <!-- Botão de Acesso -->
+                <button type="submit" class="btn btn-cyber w-100 py-2 text-uppercase">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Inicializar Sessão
+                </button>
+            </form>
+
+            <!-- Footer Card -->
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <small class="text-muted" style="font-size: 0.75rem;">
+                    <i class="bi bi-lock-fill me-1 text-cyan"></i> Conexão Criptografada AES-256
+                </small>
+            </div>
+
         </div>
-
-        <!-- Alerta de Erro -->
-        <?php if (!empty($erro)): ?>
-            <div class="alert alert-danger bg-transparent border-danger text-danger text-center small py-2 mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-1"></i> <?= $erro ?>
-            </div>
-        <?php endif; ?>
-
-        <!-- Formulário de Login -->
-        <form action="loginadmin.php" method="POST">
-            
-            <!-- Campo Usuário/E-mail -->
-            <div class="mb-3">
-                <label for="usuario" class="form-label small text-uppercase text-muted fw-bold">E-mail / Node ID</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-terminal"></i></span>
-                    <input type="email" class="form-control" id="usuario" name="usuario" placeholder="admin@technopunk.io" required autocomplete="off">
-                </div>
-            </div>
-
-            <!-- Campo Senha -->
-            <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <label for="senha" class="form-label small text-uppercase text-muted fw-bold mb-0">Chave Neural (Senha)</label>
-                    <a href="#" class="small text-cyan text-decoration-none">Resetar?</a>
-                </div>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
-                    <input type="password" class="form-control" id="senha" name="senha" placeholder="••••••••" required>
-                </div>
-            </div>
-
-            <!-- Manter Conectado -->
-            <div class="form-check mb-4">
-                <input class="form-check-input bg-dark border-secondary" type="checkbox" id="remember">
-                <label class="form-check-label small text-muted" for="remember">
-                    Manter sessão ativa na rede
-                </label>
-            </div>
-
-            <!-- Botão de Acesso -->
-            <button type="submit" class="btn btn-cyber w-100 py-2 text-uppercase">
-                <i class="bi bi-box-arrow-in-right me-2"></i> Inicializar Sessão
-            </button>
-        </form>
-
-        <!-- Footer Card -->
-        <div class="text-center mt-4 pt-3 border-top border-secondary">
-            <small class="text-muted" style="font-size: 0.75rem;">
-                <i class="bi bi-lock-fill me-1 text-cyan"></i> Conexão Criptografada AES-256
-            </small>
-        </div>
-
     </div>
-</div>
 
-<!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

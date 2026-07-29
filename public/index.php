@@ -6,20 +6,64 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $raizProjeto = dirname(__DIR__);
 
-$pagina = $_GET['pagina'] ?? 'home';
+$rotas = array_merge(
+    require $raizProjeto . '/routes/web.php',
+    require $raizProjeto . '/routes/cliente.php',
+    require $raizProjeto . '/routes/admin.php',
+);
 
-$rotas = [
-    'home' => $raizProjeto . '/views/site/home.php',
-    'admin' => $raizProjeto . '/views/admin/dashboard.php',
-    'loginadmin' => $raizProjeto . '/views/site/loginadm.php',
-];
+$metodoHttp = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
-if (!array_key_exists($pagina, $rotas)) {
-    http_response_code(404);
+$caminho = parse_url(
+    $_SERVER['REQUEST_URI'] ?? '/',
+    PHP_URL_PATH
+);
 
-    require $raizProjeto . '/views/erros/404.php';
+$caminho = $caminho ?: '/';
+
+$caminhoBase = str_replace(
+    '\\',
+    '/',
+    dirname($_SERVER['SCRIPT_NAME'] ?? '')
+);
+
+$caminhoBase = rtrim($caminhoBase, '/');
+
+if (str_starts_with($caminho, $caminhoBase)) {
+    $caminho = substr($caminho, strlen($caminhoBase));
+}
+
+$caminho = '/' . trim($caminho, '/');
+
+foreach ($rotas as $rota) {
+    $mesmoMetodo = $rota['method'] === $metodoHttp;
+    $mesmoCaminho = $rota['path'] === $caminho;
+
+    if (!$mesmoMetodo || !$mesmoCaminho) {
+        continue;
+    }
+
+    [$controller, $acao] = $rota['action'];
+
+    if (!class_exists($controller)) {
+        throw new RuntimeException(
+            "Controller não encontrado: {$controller}"
+        );
+    }
+
+    $objetoController = new $controller();
+
+    if (!method_exists($objetoController, $acao)) {
+        throw new RuntimeException(
+            "Método não encontrado: {$controller}::{$acao}"
+        );
+    }
+
+    $objetoController->{$acao}();
 
     exit;
 }
 
-require $rotas[$pagina];
+http_response_code(404);
+
+require $raizProjeto . '/views/erros/404.php';
