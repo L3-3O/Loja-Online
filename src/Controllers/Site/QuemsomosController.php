@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controllers\Site;
 
-class ContatoController
+class QuemSomosController
 {
     public function index(): void
     {
-        $arquivoView = dirname(__DIR__, 3) . '/views/site/contato.php';
+        $arquivoView = dirname(__DIR__, 3) . '/views/site/quemsomos.php';
 
         if (!is_file($arquivoView)) {
             throw new \RuntimeException(
