@@ -115,6 +115,7 @@ $produtos_destaque = [
             <div class="d-flex align-items-center mb-4 text-white text-decoration-none">
                 <i class="bi bi-cpu-fill text-cyan fs-3 me-2"></i>
                 <span class="fs-4 fw-bold tracking-wide">TECHNO<span class="text-magenta">PUNK</span></span>
+                
             </div>
             
             <p class="text-uppercase text-muted px-2 fs-7 fw-bold mb-2">Painel de Controle</p>
@@ -188,7 +189,38 @@ $produtos_destaque = [
                         Nossa infraestrutura digital está sendo reescrita no submundo da rede. Prepare-se para o lançamento de uma nova experiência em vestuário, acessórios e gadgets de vanguarda.
                     </p>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-info" data-bs-dismiss="alert">Ocultar</button>
+                <form
+                action="<?=
+                    BASE_URL
+                ?>/logadm"
+                method="post"
+            >
+
+                <input
+                    type="hidden"
+                    name="_token"
+                    value="<?=
+                        htmlspecialchars(
+                            $csrfToken,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        )
+                    ?>"
+                >
+
+                <button
+                    class="btn btn-outline-light"
+                    type="submit"
+                >
+                    <i
+                        class="bi bi-box-arrow-right me-1"
+                        aria-hidden="true"
+                    ></i>
+
+                    Sair
+                </button>
+
+            </form>
             </div>
 
             <!-- Header do Topo -->
