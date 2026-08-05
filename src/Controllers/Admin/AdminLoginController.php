@@ -202,7 +202,7 @@ final class AdminLoginController
         Csrf::renovar();
 
         $this->redirecionar(
-            '/admin'
+            '/logadm'
         );
     }
 

@@ -43,7 +43,7 @@ declare(strict_types=1);
             <form
                 action="<?=
                     BASE_URL
-                ?>/logout"
+                ?>/logout-admin"
                 method="post"
             >
 

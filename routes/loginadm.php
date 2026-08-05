@@ -23,7 +23,7 @@ return [
     ],
     [
         'method' => 'POST',
-        'path' => '/logadm',
+        'path' => '/logout',
         'action' => [
             AdminLoginController::class,
             'sair',

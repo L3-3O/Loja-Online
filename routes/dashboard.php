@@ -13,4 +13,12 @@ return [
             'index',
         ],
     ],
+     [
+        'method' => 'POST',
+        'path' => '/dash',
+        'action' => [
+            DashboardController::class,
+            'index',
+        ],
+    ],
 ];

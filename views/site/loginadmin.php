@@ -14,7 +14,7 @@ declare(strict_types=1);
         content="width=device-width, initial-scale=1">
 
     <title>
-        TecnhoPunk
+        TechnoPunk
     </title>
 
     <link
@@ -120,7 +120,8 @@ declare(strict_types=1);
                     <span class="fs-3 fw-bold tracking-wide">TECHNO<span class="text-magenta">PUNK</span></span>
                 </div>
                 <span class="badge badge-cyber mb-2">Restricted Access // Core System</span>
-                <p class="text-muted small mb-0">Submundo Node Administrator Login</p>
+                <!-- Alterado para text-light -->
+                <p class="text-light small mb-0">Submundo Node Administrator Login</p>
             </div>
 
             <!-- Alerta de Erro -->
@@ -131,44 +132,34 @@ declare(strict_types=1);
             <?php endif; ?>
 
             <!-- Formulário de Login -->
-            <form action="<?=
-                            BASE_URL
-                            ?>/logadm" method="POST">
+            <form action="<?= BASE_URL ?>/logadm" method="POST">
 
                 <input
                     type="hidden"
                     name="_token"
-                    value="<?=
-                            htmlspecialchars(
-                                $csrfToken,
-                                ENT_QUOTES,
-                                'UTF-8'
-                            )
-                            ?>">
+                    value="<?= htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') ?>">
 
                 <!-- Campo Usuário/E-mail -->
                 <div class="mb-3">
-                    <label for="usuario" class="form-label small text-uppercase text-muted fw-bold">E-mail / Node ID</label>
+                    <!-- Alterado para text-light -->
+                    <label for="email" class="form-label small text-uppercase text-light fw-bold">E-mail </label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-terminal"></i></span>
                         <input type="email" class="form-control" id="email"
                             name="email"
-                            value="<?=
-                                    htmlspecialchars(
-                                        (string) $email,
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    )
-                                    ?>" placeholder="admin@technopunk.io" autocomplete="username"
-                                required
-                                autofocus>
+                            value="<?= htmlspecialchars((string) ($email ?? ''), ENT_QUOTES, 'UTF-8') ?>" 
+                            placeholder="admin@technopunk.io" autocomplete="username"
+                            required
+                            autofocus>
                     </div>
                 </div>
 
                 <!-- Campo Senha -->
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label for="senha" class="form-label small text-uppercase text-muted fw-bold mb-0">Chave Neural (Senha)</label>
+                        <!-- Alterado para text-light -->
+                        <label for="senha" class="form-label small text-uppercase text-light fw-bold mb-0">Senha</label>
+                        <!-- Resetar? mantido com destaque em ciano -->
                         <a href="#" class="small text-cyan text-decoration-none">Resetar?</a>
                     </div>
                     <div class="input-group">
@@ -180,7 +171,8 @@ declare(strict_types=1);
                 <!-- Manter Conectado -->
                 <div class="form-check mb-4">
                     <input class="form-check-input bg-dark border-secondary" type="checkbox" id="remember">
-                    <label class="form-check-label small text-muted" for="remember">
+                    <!-- Alterado para text-light -->
+                    <label class="form-check-label small text-light" for="remember">
                         Manter sessão ativa na rede
                     </label>
                 </div>
@@ -193,7 +185,8 @@ declare(strict_types=1);
 
             <!-- Footer Card -->
             <div class="text-center mt-4 pt-3 border-top border-secondary">
-                <small class="text-muted" style="font-size: 0.75rem;">
+                <!-- Alterado para text-light -->
+                <small class="text-light" style="font-size: 0.75rem;">
                     <i class="bi bi-lock-fill me-1 text-cyan"></i> Conexão Criptografada AES-256
                 </small>
             </div>
