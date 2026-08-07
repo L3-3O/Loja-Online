@@ -1,3 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+$tituloProdutos = $tituloProdutos
+    ?? 'Loja Online | Produtos, ofertas e tecnologia';
+
+$textoHero = $textoHero
+    ?? 'Produtos selecionados para você.';
+
+?>
 <!doctype html>
 <html lang="pt-BR">
 
@@ -5,7 +16,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Loja Online | Produtos, ofertas e tecnologia</title>
+    <title> <?=htmlspecialchars($tituloProdutos,ENT_QUOTES,'UTF-8')?></title>
     <meta name="description" content="Encontre produtos de informática, celulares, acessórios, games e ofertas especiais em nossa loja online.">
     <meta name="keywords" content="loja online, tecnologia, informática, celulares, acessórios, games, ofertas">
     <meta name="author" content="Loja Online">
@@ -20,7 +31,7 @@
     <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon">
 
     <!-- Base URL para Rotas -->
-    <base href="/loja-online/public/">
+    <base href="/loja_online/public/">
 
     <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -33,7 +44,8 @@
             --primary-color: #0d6efd;
             --primary-dark: #0b5ed7;
             --secondary-bg: #f8f9fa;
-            --dark-bg: #212529;   
+            --dark-bg: #212529;
+            --text-muted-custom: #6c757d;
         }
 
         body {
@@ -114,26 +126,6 @@
         .equal-height-card .card-body .mt-auto {
             margin-top: auto;
         }
-
-        /* Correção para o texto do rodapé ficar branco */
-        footer, 
-        .footer {
-            color: #ffffff !important;
-        }
-        
-        /* Garantir que links dentro do footer também fiquem legíveis (opcional) */
-        footer a, 
-        .footer a {
-            color: #f8f9fa;
-        }
-        
-        footer a:hover, 
-        .footer a:hover {
-            color: #ffffff;
-            text-decoration: underline;
-        }
-
-      
     </style>
 </head>
 
@@ -144,43 +136,7 @@
     <!-- Navbar principal -->
     <?php require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
     <main>
-        <!-- Banner principal -->
-        <?php require_once APP_ROOT . '/views/componentes/site/sections/banner.php'; ?>
-        
-        <!-- Benefícios da loja -->
-        <?php require_once APP_ROOT . '/views/componentes/site/sections/beneficios_loja.php'; ?>
-        
-        <!-- Categorias em destaque -->
-        <?php require_once APP_ROOT . '/views/componentes/site/sections/categorias_em_destaque.php'; ?>    
-        
-        
-        <!-- Produtos em destaque -->
-        <section class="py-5 bg-light">
-            <div class="container">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="h3 fw-bold mb-0">Produtos em destaque</h2>
-                    <a href="produtos" class="text-decoration-none fw-semibold">Ver todos os produtos <i class="bi bi-arrow-right"></i></a>
-                </div>
-                <div class="row g-4">
-                    <!-- Produto 1 -->
-                    <?php require_once APP_ROOT . '/views/componentes/site/sections/produto1.php'; ?>
-                    
-                    
-                </div>
-            </div>
-        </section>
-
-        <!-- Banner de oferta -->
-        <?php require_once APP_ROOT . '/views/componentes/site/sections/banner_oferta.php'; ?>
-        
-        
-        <!-- Produtos mais vendidos -->
-        <?php require_once APP_ROOT . '/views/componentes/site/sections/produto_mais_vendido.php'; ?>
-        
-
-        <!-- Newsletter -->
-        <?php require_once APP_ROOT . '/views/componentes/site/sections/news.php'; ?>
-
+       
     </main>
 
     <!-- Rodapé -->

@@ -48,7 +48,10 @@ $rotas = array_merge(
     require $raizProjeto . '/routes/web.php',
     require $raizProjeto . '/routes/admin.php',
     require $raizProjeto . '/routes/loginadm.php',
-    require $raizProjeto . '/routes/dashboard.php'
+    require $raizProjeto . '/routes/dashboard.php',
+    require $raizProjeto . '/routes/produtos.php',
+    require $raizProjeto . '/routes/contato.php',
+    require $raizProjeto . '/routes/quemsomos.php'
 );
 /*
 |--------------------------------------------------------------------------
