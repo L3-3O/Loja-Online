@@ -17,7 +17,7 @@ $tituloNav = $tituloNav
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="">Início</a>
+                    <a class="nav-link active" aria-current="page" href="./">Início</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="produtos">Produtos</a>
@@ -27,10 +27,10 @@ $tituloNav = $tituloNav
                         Categorias
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="categoria/informatica">Informática</a></li>
-                        <li><a class="dropdown-item" href="categoria/celulares">Celulares</a></li>
-                        <li><a class="dropdown-item" href="categoria/acessorios">Acessórios</a></li>
-                        <li><a class="dropdown-item" href="categoria/casa-decoracao">Casa e decoração</a></li>
+                        <li><a class="dropdown-item" href="categorias/?v=1">Informática</a></li>
+                        <li><a class="dropdown-item" href="categorias/?v=2">Celulares</a></li>
+                        <li><a class="dropdown-item" href="categorias/?v=3">Acessórios</a></li>
+                        <li><a class="dropdown-item" href="categorias/?v=4">Casa e decoração</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
