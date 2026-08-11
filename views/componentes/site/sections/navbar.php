@@ -45,10 +45,10 @@ $tituloNav = $tituloNav
                         Ajuda
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="ajuda">Central de ajuda</a></li>
-                        <li><a class="dropdown-item" href="faq">Perguntas frequentes</a></li>
-                        <li><a class="dropdown-item" href="rastrear-pedido">Rastrear pedido</a></li>
-                        <li><a class="dropdown-item" href="trocas-devolucoes">Trocas e devoluções</a></li>
+                        <li><a class="dropdown-item" href="ajuda/?a=1">Central de ajuda</a></li>
+                        <li><a class="dropdown-item" href="ajuda/?a=2">Perguntas frequentes</a></li>
+                        <li><a class="dropdown-item" href="ajuda/?a=3">Rastrear pedido</a></li>
+                        <li><a class="dropdown-item" href="ajuda/?a=4">Trocas e devoluções</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
@@ -75,12 +75,12 @@ $tituloNav = $tituloNav
                         <span class="d-none d-lg-inline">Conta</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="cliente/login">Entrar</a></li>
-                        <li><a class="dropdown-item" href="cliente/cadastro">Criar conta</a></li>
+                        <li><a class="dropdown-item" href="user_entrar">Entrar</a></li>
+                        <li><a class="dropdown-item" href="user_criar">Criar conta</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="cliente/pedidos">Meus pedidos</a></li>
+                        <li><a class="dropdown-item" href="user_pedido">Meus pedidos</a></li>
                     </ul>
                 </div>
 

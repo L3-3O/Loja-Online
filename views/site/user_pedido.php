@@ -144,8 +144,7 @@
     <!-- Navbar principal -->
     <?php require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
     <main>
-     Aqui o conteudo
-   
+       
 
     </main>
 

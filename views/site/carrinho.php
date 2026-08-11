@@ -33,7 +33,7 @@
             --primary-color: #0d6efd;
             --primary-dark: #0b5ed7;
             --secondary-bg: #f8f9fa;
-            --dark-bg: #212529;   
+            --dark-bg: #212529;
         }
 
         body {
@@ -116,24 +116,22 @@
         }
 
         /* Correção para o texto do rodapé ficar branco */
-        footer, 
+        footer,
         .footer {
             color: #ffffff !important;
         }
-        
+
         /* Garantir que links dentro do footer também fiquem legíveis (opcional) */
-        footer a, 
+        footer a,
         .footer a {
             color: #f8f9fa;
         }
-        
-        footer a:hover, 
+
+        footer a:hover,
         .footer a:hover {
             color: #ffffff;
             text-decoration: underline;
         }
-
-      
     </style>
 </head>
 
@@ -145,7 +143,6 @@
     <?php require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
     <main>
      Aqui o conteudo
-   
 
     </main>
 

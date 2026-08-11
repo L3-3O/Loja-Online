@@ -1,14 +1,3 @@
-<?php
-
-declare(strict_types=1);
-
-$tituloHero = $tituloHero
-    ?? 'Encontre tudo o que precisa';
-
-$textoHero = $textoHero
-    ?? 'Produtos selecionados para você.';
-
-?>
 <!doctype html>
 <html lang="pt-BR">
 
@@ -44,8 +33,7 @@ $textoHero = $textoHero
             --primary-color: #0d6efd;
             --primary-dark: #0b5ed7;
             --secondary-bg: #f8f9fa;
-            --dark-bg: #212529;
-            --text-muted-custom: #6c757d;
+            --dark-bg: #212529;   
         }
 
         body {
@@ -126,6 +114,26 @@ $textoHero = $textoHero
         .equal-height-card .card-body .mt-auto {
             margin-top: auto;
         }
+
+        /* Correção para o texto do rodapé ficar branco */
+        footer, 
+        .footer {
+            color: #ffffff !important;
+        }
+        
+        /* Garantir que links dentro do footer também fiquem legíveis (opcional) */
+        footer a, 
+        .footer a {
+            color: #f8f9fa;
+        }
+        
+        footer a:hover, 
+        .footer a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+      
     </style>
 </head>
 
@@ -136,7 +144,9 @@ $textoHero = $textoHero
     <!-- Navbar principal -->
     <?php require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
     <main>
-       
+     Aqui o conteudo
+  
+
     </main>
 
     <!-- Rodapé -->
