@@ -1,3 +1,6 @@
+<?php
+declare(strict_types=1);
+use App\Helpers\View; ?>
 <!doctype html>
 <html lang="pt-BR">
 
@@ -67,56 +70,30 @@
     <!-- Cabeçalho superior -->
     <?php require_once APP_ROOT . '/views/layouts/site/header.php'; ?>
     <!-- Navbar principal -->
-    <?php require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
+    <?php View::componente('navbar', ['categorias' => $categorias,]);?>
 
     <main class="container py-5">
         <h2 class="text-center mb-5 text-white">Nossos Produtos</h2>
-        
+
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <!-- Exemplo de Produto 1 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Produto">
-                    <div class="card-body">
-                        <h5 class="card-title">Produto Tecnológico</h5>
-                        <p class="card-text">Descrição breve do produto incrível que você precisa ter.</p>
-                        <p class="h4 text-info">R$ 999,99</p>
-                    </div>
-                    <div class="card-footer border-0 bg-transparent">
-                        <button class="btn btn-cyber w-100">Comprar Agora</button>
+            <?php foreach ($produtos as $produto): ?>
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Produto">
+                        <div class="card-body">
+                            <h5 class="card-title"> <?=htmlspecialchars( $produto['nome'], ENT_QUOTES, 'UTF-8')?></h5>
+                            <p class="card-text"><?=htmlspecialchars( $produto['descricao'], ENT_QUOTES, 'UTF-8')?></p>
+                            <p class="h4 text-info"><?=htmlspecialchars( $produto['preco'], ENT_QUOTES, 'UTF-8')?></p>
+                        </div>
+                        <div class="card-footer border-0 bg-transparent">
+                            <button class="btn btn-cyber w-100">Comprar Agora</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php endforeach; ?>
 
-            <!-- Exemplo de Produto 2 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Produto">
-                    <div class="card-body">
-                        <h5 class="card-title">Acessório Gamer</h5>
-                        <p class="card-text">Alta performance para o seu setup, design moderno e ergonômico.</p>
-                        <p class="h4 text-info">R$ 450,00</p>
-                    </div>
-                    <div class="card-footer border-0 bg-transparent">
-                        <button class="btn btn-cyber w-100">Comprar Agora</button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Exemplo de Produto 3 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Produto">
-                    <div class="card-body">
-                        <h5 class="card-title">Hardware Premium</h5>
-                        <p class="card-text">Potencialize seu computador com o que há de mais novo no mercado.</p>
-                        <p class="h4 text-info">R$ 1.200,00</p>
-                    </div>
-                    <div class="card-footer border-0 bg-transparent">
-                        <button class="btn btn-cyber w-100">Comprar Agora</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </main>
 

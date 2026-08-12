@@ -30,7 +30,7 @@ final class View
         }
 
         $arquivo = APP_ROOT
-            . '/views/components/'
+            . '/views/componentes/'
             . $nome
             . '.php';
 

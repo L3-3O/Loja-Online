@@ -31,16 +31,8 @@ class HomeController
         | Busca as categorias ativas
         |--------------------------------------------------------------------------
         */
-        foreach ($categorias as &$categoria) {
-
-            $categoria['id_seguro'] =
-                IdSeguro::criptografar(
-                    (int) $categoria['id']
-                );
-        }
-
-        unset($categoria);
-
+        
+        
         /*
         |--------------------------------------------------------------------------
         | Localiza a View
@@ -63,11 +55,23 @@ class HomeController
         | dentro da home.php.
         |
         */
+
         $categoriaRepository = new CategoriaRepository($pdo);
         $categorias = $categoriaRepository->listarAtivas();
         $produtoRepository = new ProdutoRepository($pdo);
         $produtosDestaque = $produtoRepository->listarDestaques(10);
         $maisVendidos = $produtoRepository->listarMaisVendidos(10);
+
+        foreach ($categorias as &$categoria) {
+
+            $categoria['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int) $categoria['id']
+                );
+        }
+        unset($categoria);
+
+        
         require $arquivoView;
     }
 }

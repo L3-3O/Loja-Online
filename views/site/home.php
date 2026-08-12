@@ -1,3 +1,7 @@
+<?php
+declare(strict_types=1);
+use App\Helpers\View; ?>
+
 <!doctype html>
 <html lang="pt-BR">
 
@@ -142,7 +146,8 @@
     <!-- Cabeçalho superior -->
     <?php require_once APP_ROOT . '/views/layouts/site/header.php'; ?>
     <!-- Navbar principal -->
-    <?php require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
+    <?php //require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
+    <?php View::componente('navbar', ['categorias' => $categorias,]);?>
     <main>
         <!-- Banner principal -->
         <?php require_once APP_ROOT . '/views/componentes/site/sections/banner.php'; ?>

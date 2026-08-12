@@ -8,7 +8,7 @@ $tituloNav = $tituloNav
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-3 text-primary" href=""><?=htmlspecialchars($tituloNav,ENT_QUOTES,'UTF-8')?></a>
+        <a class="navbar-brand fw-bold fs-3 text-primary" href=""><?= htmlspecialchars($tituloNav, ENT_QUOTES, 'UTF-8') ?></a>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Alternar navegação">
             <span class="navbar-toggler-icon"></span>
@@ -26,16 +26,40 @@ $tituloNav = $tituloNav
                     <a class="nav-link dropdown-toggle" href="categorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Categorias
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="categorias/?v=1">Informática</a></li>
-                        <li><a class="dropdown-item" href="categorias/?v=2">Celulares</a></li>
-                        <li><a class="dropdown-item" href="categorias/?v=3">Acessórios</a></li>
-                        <li><a class="dropdown-item" href="categorias/?v=4">Casa e decoração</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item fw-bold" href="categorias">Ver todas</a></li>
-                    </ul>
+                   <ul class="dropdown-menu">
+
+                            <?php foreach ($categorias as $categoria): ?>
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?=
+                                                BASE_URL
+                                                ?>/categorias?cat=<?=
+                                                                    urlencode(
+                                                                        $categoria['id_seguro']
+                                                                    )
+                                                                    ?>">
+
+                                        <?=
+                                        htmlspecialchars(
+                                            $categoria['nome'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        )
+                                        ?>
+
+                                    </a>
+
+                                </li>
+
+
+                            <?php endforeach; ?>
+
+                          
+                           
+                        </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="ofertas">Ofertas</a>
