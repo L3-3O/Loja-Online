@@ -70,7 +70,7 @@ use App\Helpers\View; ?>
     <!-- Cabeçalho superior -->
     <?php require_once APP_ROOT . '/views/layouts/site/header.php'; ?>
     <!-- Navbar principal -->
-    <?php View::componente('navbar', ['categorias' => $categorias,]);?>
+    <?php App\Helpers\View::componente('site/navbar', ['categorias' => $categorias]); ?>
 
     <main class="container py-5">
         <h2 class="text-center mb-5 text-white">Nossos Produtos</h2>
