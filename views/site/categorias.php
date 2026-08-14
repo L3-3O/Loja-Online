@@ -144,7 +144,17 @@
     <!-- Navbar principal -->
     <?php App\Helpers\View::componente('site/navbar', ['categorias' => $categorias]); ?>
     <main>
-       Aqui o conteudo
+       
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                 <?php foreach ($produtos as $produto): ?>
+ 
+                    a
+                 <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
 
     </main>
 
