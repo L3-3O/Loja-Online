@@ -142,7 +142,7 @@
     <!-- Cabeçalho superior -->
     <?php require_once APP_ROOT . '/views/layouts/site/header.php'; ?>
     <!-- Navbar principal -->
-   <?php App\Helpers\View::componente('site/navbar', ['categorias' => $categorias]); ?>
+   <?php App\Helpers\View::componente('navbar', ['categorias' => $categorias]); ?>
     <main>
        
 

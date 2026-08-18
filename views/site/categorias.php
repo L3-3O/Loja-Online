@@ -1,3 +1,6 @@
+<?php
+declare(strict_types=1);
+use App\Helpers\View; ?>
 <!doctype html>
 <html lang="pt-BR">
 
@@ -142,19 +145,94 @@
     <!-- Cabeçalho superior -->
     <?php require_once APP_ROOT . '/views/layouts/site/header.php'; ?>
     <!-- Navbar principal -->
-    <?php App\Helpers\View::componente('site/navbar', ['categorias' => $categorias]); ?>
+    <?php App\Helpers\View::componente('navbar', ['categorias' => $categorias]); ?>
     <main>
        
+   <main class="py-4">
     <div class="container">
-        <div class="row">
+        
+        <!-- Cabeçalho da Categoria Selecionada -->
+        <div class="row mb-4">
             <div class="col-12">
-                 <?php foreach ($produtos as $produto): ?>
- 
-                    a
-                 <?php endforeach; ?>
+                <h1 class="display-6 fw-bold"><?= htmlspecialchars($categoria['nome'], ENT_QUOTES, 'UTF-8') ?></h1>
+                <?php if (!empty($categoria['descricao'])): ?>
+                    <p class="text-muted"><?= htmlspecialchars($categoria['descricao'], ENT_QUOTES, 'UTF-8') ?></p>
+                <?php endif; ?>
+                <hr>
             </div>
         </div>
+
+        <!-- Listagem de Produtos Relacionados -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            <?php if (!empty($produtos)): ?>
+                <?php foreach ($produtos as $produto): ?>
+                    <div class="col">
+                        <div class="card h-100 card-custom equal-height-card shadow-sm">
+                            <!-- Imagem do Produto -->
+                            <div class="card-img-top-container">
+                                <img 
+                                    src="<?= htmlspecialchars($produto['imagem'] ?? 'assets/img/sem-foto.jpg', ENT_QUOTES, 'UTF-8') ?>" 
+                                    alt="<?= htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8') ?>"
+                                >
+                            </div>
+
+                            <!-- Informações do Produto -->
+                            <div class="card-body">
+                                <h5 class="card-title h6"><?= htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8') ?></h5>
+                                
+                                <!-- Exibição do Preço (se existir no banco) -->
+                                <?php if (isset($produto['preco'])): ?>
+                                    <p class="card-text fw-bold text-primary mb-3">
+                                        R$ <?= number_format((float) $produto['preco'], 2, ',', '.') ?>
+                                    </p>
+                                <?php endif; ?>
+
+                                <!-- Ações do Produto -->
+                                <div class="mt-auto pt-2 d-flex flex-column gap-2">
+                                    
+                                    <!-- Botão Comprar (Direciona para a compra direta ou abre o carrinho) -->
+                                    <a 
+                                        href="<?= htmlspecialchars(BASE_URL . '/carrinho/adicionar?id=' . urlencode($produto['id_seguro']) . '&comprar=1', ENT_QUOTES, 'UTF-8') ?>" 
+                                        class="btn btn-success btn-sm w-100 fw-semibold"
+                                    >
+                                        <i class="bi bi-credit-card me-1"></i> Comprar
+                                    </a>
+
+                                    <div class="d-flex gap-2">
+                                        <!-- Form para Adicionar ao Carrinho -->
+                                        <form action="<?= htmlspecialchars(BASE_URL . '/carrinho/adicionar', ENT_QUOTES, 'UTF-8') ?>" method="POST" class="w-100">
+                                            <input type="hidden" name="produto_id" value="<?= htmlspecialchars($produto['id_seguro'], ENT_QUOTES, 'UTF-8') ?>">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm w-100" title="Adicionar ao Carrinho">
+                                                <i class="bi bi-cart-plus me-1"></i> Carrinho
+                                            </button>
+                                        </form>
+
+                                        <!-- Botão Ver Detalhes -->
+                                        <a 
+                                            href="<?= htmlspecialchars(BASE_URL . '/produto?id=' . urlencode($produto['id_seguro']), ENT_QUOTES, 'UTF-8') ?>" 
+                                            class="btn btn-outline-secondary btn-sm"
+                                            title="Ver detalhes do produto"
+                                        >
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        Nenhum produto cadastrado para esta categoria até o momento.
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+
     </div>
+</main>
 
     </main>
 

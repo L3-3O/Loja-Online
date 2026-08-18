@@ -143,7 +143,7 @@
     <?php require_once APP_ROOT . '/views/layouts/site/header.php'; ?>
     <!-- Navbar principal -->
     <?php //require_once APP_ROOT . '/views/componentes/site/sections/navbar.php'; ?>
-    <?php App\Helpers\View::componente('site/navbar', ['categorias' => $categorias]); ?>
+    <?php App\Helpers\View::componente('navbar', ['categorias' => $categorias]); ?>
     <main>
      Aqui o conteudo
 
