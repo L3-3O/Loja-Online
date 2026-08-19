@@ -21,6 +21,4 @@ CREATE TABLE IF NOT EXISTS usuarios_admin (
 
     CONSTRAINT uq_usuarios_admin_email
         UNIQUE (email)
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB;

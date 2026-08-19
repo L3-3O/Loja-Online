@@ -20,7 +20,7 @@ final class DashboardController
             )
         ) {
             $this->redirecionar(
-                '/dash'
+                '/login-admin'
             );
         }
 

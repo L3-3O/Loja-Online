@@ -4,64 +4,42 @@ declare(strict_types=1);
 
 namespace App\Controllers\Site;
 
+use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
-use App\Helpers\IdSeguro;
+use RuntimeException;
 
 class HomeController
 {
     public function index(): void
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Raiz do projeto
-        |--------------------------------------------------------------------------
-        */
-        $raizProjeto = dirname(__DIR__, 3);
-        /*
-        |--------------------------------------------------------------------------
-        | Conexão com o banco
-        |--------------------------------------------------------------------------
-        */
-        require_once $raizProjeto
-            . '/database/conexao.php';
-        $pdo = \Config::connect();
-        /*
-        |--------------------------------------------------------------------------
-        | Busca as categorias ativas
-        |--------------------------------------------------------------------------
-        */
         
-        
+        $raizProjeto =dirname(__DIR__, 3);
+        require_once $raizProjeto . '/database/conexao.php';
+
+        $pdo =\Config::connect();
+
+
         /*
         |--------------------------------------------------------------------------
-        | Localiza a View
+        | 3. Categorias
         |--------------------------------------------------------------------------
         */
-        $arquivoView =
-            $raizProjeto
-            . '/views/site/home.php';
-        if (!is_file($arquivoView)) {
-            throw new \RuntimeException(
-                'A página inicial não foi encontrada.'
+        $categoriaRepository =
+            new CategoriaRepository(
+                $pdo
             );
-        }
+
+        $categorias =
+            $categoriaRepository
+                ->listarAtivas();
+
+
         /*
         |--------------------------------------------------------------------------
-        | Carrega a View
+        | 4. Gera ID seguro das categorias
         |--------------------------------------------------------------------------
-        |
-        | A variável $categorias estará disponível
-        | dentro da home.php.
-        |
         */
-
-        $categoriaRepository = new CategoriaRepository($pdo);
-        $categorias = $categoriaRepository->listarAtivas();
-        $produtoRepository = new ProdutoRepository($pdo);
-        $produtosDestaque = $produtoRepository->listarDestaques(10);
-        $maisVendidos = $produtoRepository->listarMaisVendidos(10);
-
         foreach ($categorias as &$categoria) {
 
             $categoria['id_seguro'] =
@@ -69,9 +47,52 @@ class HomeController
                     (int) $categoria['id']
                 );
         }
+
         unset($categoria);
 
-        
+
+        /*
+        |--------------------------------------------------------------------------
+        | 5. Produtos
+        |--------------------------------------------------------------------------
+        */
+        $produtoRepository =
+            new ProdutoRepository(
+                $pdo
+            );
+
+        $produtosDestaque =
+            $produtoRepository
+                ->listarDestaques(10);
+
+        $maisVendidos =
+            $produtoRepository
+                ->listarMaisVendidos(10);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 6. Localiza a View
+        |--------------------------------------------------------------------------
+        */
+        $arquivoView =
+            $raizProjeto
+            . '/views/site/home.php';
+
+
+        if (!is_file($arquivoView)) {
+
+            throw new RuntimeException(
+                'A página inicial não foi encontrada.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 7. Carrega a View
+        |--------------------------------------------------------------------------
+        */
         require $arquivoView;
     }
 }

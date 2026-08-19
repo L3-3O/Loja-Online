@@ -1,10 +1,17 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controllers\Site;
+
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
+use App\Repositories\ProdutoRepository;
+use App\Helpers\CsrfCarrinho;
+
 use RuntimeException;
-class OfertasController
+
+final class OfertasController
 {
     public function index(): void
     {
@@ -13,74 +20,142 @@ class OfertasController
         | 1. Raiz do projeto
         |--------------------------------------------------------------------------
         */
+
         $raizProjeto =
             dirname(__DIR__, 3);
+
+
         /*
         |--------------------------------------------------------------------------
-        | 2. Conexão com o banco
+        | 2. Conexão
         |--------------------------------------------------------------------------
         */
+
         require_once $raizProjeto
             . '/database/conexao.php';
+
+
         $pdo =
             \Config::connect();
+
+
         /*
         |--------------------------------------------------------------------------
-        | 3. Categorias
+        | 3. Repositories
         |--------------------------------------------------------------------------
         */
+
         $categoriaRepository =
             new CategoriaRepository(
                 $pdo
             );
+
+
+        $produtoRepository =
+            new ProdutoRepository(
+                $pdo
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4. Categorias do header
+        |--------------------------------------------------------------------------
+        */
+
         $categorias =
             $categoriaRepository
-            ->listarAtivas();
-        /*
-        |--------------------------------------------------------------------------
-        | 4. Gera ID seguro das categorias
-        |--------------------------------------------------------------------------
-        */
-        foreach ($categorias as &$categoria) {
+                ->listarAtivas();
+
+
+        foreach (
+            $categorias
+            as &$categoria
+        ) {
+
             $categoria['id_seguro'] =
                 IdSeguro::criptografar(
-                    (int) $categoria['id']
+                    (int)
+                    $categoria['id']
                 );
         }
+
+
         unset($categoria);
+
+
         /*
         |--------------------------------------------------------------------------
-        | 5. Dados específicos da página
+        | 5. Produtos em oferta
         |--------------------------------------------------------------------------
-        |
-        | Futuramente:
-        |
-        | $ofertas = ...
-        |
         */
+
+        $ofertas =
+            $produtoRepository
+                ->listarOfertasAtivas(
+                    60
+                );
+
+
         /*
         |--------------------------------------------------------------------------
-        | 6. Localiza a View
+        | 6. ID seguro dos produtos
         |--------------------------------------------------------------------------
         */
+
+        foreach (
+            $ofertas
+            as &$produto
+        ) {
+
+            $produto['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int)
+                    $produto['id']
+                );
+        }
+
+
+        unset($produto);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 7. SEO
+        |--------------------------------------------------------------------------
+        */
+
+        $tituloPagina =
+            'Ofertas - Loja Online';
+
+
+        $descricaoPagina =
+            'Confira os produtos em oferta '
+            . 'disponíveis na Loja Online.';
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 8. View
+        |--------------------------------------------------------------------------
+        */
+
+        $csrfCarrinho = CsrfCarrinho::gerar();
+
         $arquivoView =
             $raizProjeto
             . '/views/site/ofertas.php';
+
+
         if (!is_file($arquivoView)) {
+
             throw new RuntimeException(
-                'A página de ofertas não foi encontrada.'
+                'A página de ofertas '
+                . 'não foi encontrada.'
             );
         }
-        /*
-        |--------------------------------------------------------------------------
-        | 7. Carrega a View
-        |--------------------------------------------------------------------------
-        |
-        | $categorias estará disponível
-        | dentro de ofertas.php.
-        |
-        */
+
+
         require $arquivoView;
     }
 }
-
