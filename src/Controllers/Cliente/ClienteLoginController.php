@@ -9,6 +9,8 @@ use App\Helpers\CsrfCliente;
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ClienteRepository;
+use App\Services\CarrinhoService;
+
 
 final class ClienteLoginController
 {
@@ -102,7 +104,13 @@ final class ClienteLoginController
             CsrfCliente::gerar();
 
 
-        $arquivoView =
+            $carrinhoService =
+            new CarrinhoService($pdo);
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
+
             APP_ROOT
             . '/views/site/cliente_login.php';
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 abstract class Controller

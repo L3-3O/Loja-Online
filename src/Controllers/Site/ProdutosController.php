@@ -9,6 +9,7 @@ use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
 use App\Helpers\CsrfCarrinho;
 
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 class ProdutosController
@@ -146,8 +147,12 @@ class ProdutosController
         | 6. Localiza a View
         |--------------------------------------------------------------------------
         */
-        $arquivoView =
-            $raizProjeto
+            $carrinhoService =
+            new CarrinhoService($pdo);
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =  $raizProjeto
             . '/views/site/produtos.php';
         if (!is_file($arquivoView)) {
             throw new RuntimeException(

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controllers\Cliente;
 
 use App\Helpers\ClienteAuth;
+
 use RuntimeException;
+
 
 final class PerfilController
 {
@@ -14,7 +16,8 @@ final class PerfilController
         ClienteAuth::exigirLogin();
 
 
-        $arquivoView =
+$arquivoView =
+
             APP_ROOT
             . '/views/cliente/perfil.php';
 
@@ -37,7 +40,10 @@ final class PerfilController
         ClienteAuth::exigirLogin();
 
 
-        $arquivoView =
+           
+
+$arquivoView =
+
             APP_ROOT
             . '/views/cliente/seguranca.php';
 

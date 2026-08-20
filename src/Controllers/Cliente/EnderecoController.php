@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers\Cliente;
 
 use App\Helpers\ClienteAuth;
+
 use RuntimeException;
 
 final class EnderecoController
@@ -14,7 +15,10 @@ final class EnderecoController
         ClienteAuth::exigirLogin();
 
 
-        $arquivoView =
+   
+
+$arquivoView =
+
             APP_ROOT
             . '/views/cliente/enderecos.php';
 

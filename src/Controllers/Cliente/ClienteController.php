@@ -6,6 +6,7 @@ namespace App\Controllers\Cliente;
 
 use App\Helpers\ClienteAuth;
 use App\Repositories\ClienteRepository;
+use App\Services\CarrinhoService;
 
 final class ClienteController
 {
@@ -82,8 +83,16 @@ final class ClienteController
         | View
         |--------------------------------------------------------------------------
         */
+         $carrinhoService =
+            new CarrinhoService($pdo);
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
 
-        $arquivoView =
+
+          
+
+$arquivoView =
+
             APP_ROOT
             . '/views/cliente/painel.php';
 

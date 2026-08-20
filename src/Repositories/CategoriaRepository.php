@@ -54,4 +54,5 @@ final class CategoriaRepository
             ? $categoria
             : null;
     }
+    
 }

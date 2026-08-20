@@ -106,32 +106,6 @@ $csrfToken =
 
                 </li>
 
-                <!-- CARRINHO -->
-
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="<?= BASE_URL ?>/carrinho">
-                        <i class="bi-cart"></i>
-
-                        Carrinho
-                    </a>
-
-                </li>
-                
-                <li class="nav-item">
-
-                    <a
-                        class="nav-link"
-                        href="<?= BASE_URL ?>/">
-                        <i class="bi-house"></i>
-
-                        Home
-                    </a>
-
-                </li>
-
 
                 <!-- SEGURANÇA -->
 

@@ -11,6 +11,7 @@ use App\Repositories\CategoriaRepository;
 use App\Repositories\ClienteRepository;
 use App\Repositories\EnderecoRepository;
 use App\Services\ClienteCadastroService;
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 final class ClienteCadastroController
@@ -125,7 +126,13 @@ final class ClienteCadastroController
             'Criar minha conta';
 
 
-        $arquivoView =
+            $carrinhoService =
+            new CarrinhoService($pdo);
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
+
             APP_ROOT
             . '/views/site/'
             . 'cliente_cadastro.php';
