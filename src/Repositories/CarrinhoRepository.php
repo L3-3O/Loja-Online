@@ -1,7 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Repositories;
+
 use PDO;
+
 final class CarrinhoRepository
 {
     private PDO $pdo;
@@ -312,12 +316,13 @@ final class CarrinhoRepository
         return
             $consulta->fetchAll();
     }
-    
-    public function totalUnidades(
-    int $carrinhoId
-): int {
 
-    $sql = '
+
+    public function totalUnidades(
+        int $carrinhoId
+    ): int {
+
+        $sql = '
         SELECT
             COALESCE(
                 SUM(quantidade),
@@ -331,27 +336,25 @@ final class CarrinhoRepository
     ';
 
 
-    $consulta =
-        $this->pdo
+        $consulta =
+            $this->pdo
             ->prepare(
                 $sql
             );
 
 
-    $consulta->bindValue(
-        ':carrinho_id',
-        $carrinhoId,
-        PDO::PARAM_INT
-    );
+        $consulta->bindValue(
+            ':carrinho_id',
+            $carrinhoId,
+            PDO::PARAM_INT
+        );
 
 
-    $consulta->execute();
+        $consulta->execute();
 
 
-    return (int)
+        return (int)
         $consulta
             ->fetchColumn();
-}
-
-
+    }
 }

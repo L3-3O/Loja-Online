@@ -10,8 +10,8 @@ use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ClienteRepository;
 use App\Repositories\EnderecoRepository;
-use App\Services\ClienteCadastroService;
 use App\Services\CarrinhoService;
+use App\Services\ClienteCadastroService;
 use RuntimeException;
 
 final class ClienteCadastroController
@@ -22,42 +22,86 @@ final class ClienteCadastroController
     private ClienteCadastroService
         $cadastroService;
 
+        private CarrinhoService
+    $carrinhoService;
+
 
     public function __construct()
-    {
-        require_once APP_ROOT
-            . '/database/conexao.php';
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Conexão
+    |--------------------------------------------------------------------------
+    */
+
+    require_once APP_ROOT
+        . '/database/conexao.php';
+
+    $pdo =
+        \Config::connect();
 
 
-        $pdo =
-            \Config::connect();
+    /*
+    |--------------------------------------------------------------------------
+    | Categoria Repository
+    |--------------------------------------------------------------------------
+    */
+
+    $this->categoriaRepository =
+        new CategoriaRepository(
+            $pdo
+        );
 
 
-        $this->categoriaRepository =
-            new CategoriaRepository(
-                $pdo
-            );
+    /*
+    |--------------------------------------------------------------------------
+    | Cliente Repository
+    |--------------------------------------------------------------------------
+    */
+
+    $clienteRepository =
+        new ClienteRepository(
+            $pdo
+        );
 
 
-        $clienteRepository =
-            new ClienteRepository(
-                $pdo
-            );
+    /*
+    |--------------------------------------------------------------------------
+    | Endereço Repository
+    |--------------------------------------------------------------------------
+    */
+
+    $enderecoRepository =
+        new EnderecoRepository(
+            $pdo
+        );
 
 
-        $enderecoRepository =
-            new EnderecoRepository(
-                $pdo
-            );
+    /*
+    |--------------------------------------------------------------------------
+    | Cadastro Service
+    |--------------------------------------------------------------------------
+    */
+
+    $this->cadastroService =
+        new ClienteCadastroService(
+            $pdo,
+            $clienteRepository,
+            $enderecoRepository
+        );
 
 
-        $this->cadastroService =
-            new ClienteCadastroService(
-                $pdo,
-                $clienteRepository,
-                $enderecoRepository
-            );
-    }
+    /*
+    |--------------------------------------------------------------------------
+    | Carrinho Service
+    |--------------------------------------------------------------------------
+    */
+
+    $this->carrinhoService =
+        new CarrinhoService(
+            $pdo
+        );
+}
 
 
     public function formulario(): void
@@ -126,13 +170,14 @@ final class ClienteCadastroController
             'Criar minha conta';
 
 
-            $carrinhoService =
-            new CarrinhoService($pdo);
+            
+
         $quantidadeCarrinho =
-            $carrinhoService->quantidade();
+    $this->carrinhoService
+        ->quantidade();
 
-$arquivoView =
 
+        $arquivoView =
             APP_ROOT
             . '/views/site/'
             . 'cliente_cadastro.php';
@@ -317,7 +362,7 @@ $arquivoView =
         }
 
 
-        if (
+       if (
             !Cpf::validar(
                 $dados['cpf']
             )

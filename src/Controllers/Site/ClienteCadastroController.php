@@ -9,6 +9,7 @@ use App\Repositories\CategoriaRepository;
 use App\Services\CarrinhoService;
 use RuntimeException;
 
+
 class ClienteCadastroController
 {
     public function index(): void

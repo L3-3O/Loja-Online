@@ -3,7 +3,23 @@ declare(strict_types=1);
 use App\Helpers\View;
 $tituloPagina = $tituloPagina   ?? 'Cliente Cadastro';
 $descricaoPagina = $descricaoPagina ?? 'Loja online com produtos, ofertas, atendimento ao cliente e compra segura.';
-$baseUrl = defined('BASE_URL')? BASE_URL: '';?>
+$baseUrl = defined('BASE_URL')? BASE_URL: '';
+
+$quantidadeCarrinho =
+    isset(
+        $quantidadeCarrinho
+    )
+        ? max(
+            0,
+            (int)
+            $quantidadeCarrinho
+        )
+        : 0;
+
+
+?>
+
+
 <!doctype html>
 <html lang="pt-BR">
 <head>

@@ -1,9 +1,6 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controllers\Site;
-
 use App\Helpers\CarrinhoSessao;
 use App\Helpers\ClienteAuth;
 use App\Helpers\CsrfCarrinho;
@@ -11,9 +8,7 @@ use App\Helpers\IdSeguro;
 use App\Repositories\CarrinhoRepository;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
-use App\Services\CarrinhoService;
 use RuntimeException;
-
 final class CarrinhoController
 {
     /*
@@ -67,46 +62,163 @@ final class CarrinhoController
     |--------------------------------------------------------------------------
     */
     public function index(): void
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Carrinho atual
-    |--------------------------------------------------------------------------
-    */
-
-    $carrinhoId =
-        $this->carrinhoAtualId();
-
-
-    /*
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Obtém o carrinho atual
+        |--------------------------------------------------------------------------
+        */
+        $carrinhoId =
+            $this->carrinhoAtualId();
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Lista os itens
+        |--------------------------------------------------------------------------
+        */
+        $itens =
+            $this->carrinhoRepository
+            ->listarItens(
+                $carrinhoId
+            );
+        /*
     |--------------------------------------------------------------------------
     | Quantidade no carrinho
     |--------------------------------------------------------------------------
     */
-
-    $quantidadeCarrinho =
-        $this->carrinhoRepository
+        $quantidadeCarrinho =
+            $this->carrinhoRepository
             ->totalUnidades(
                 $carrinhoId
             );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Itens
-    |--------------------------------------------------------------------------
-    */
-
-    $itens =
-        $this->carrinhoRepository
-            ->listarItens(
-                $carrinhoId
+        /*
+        |--------------------------------------------------------------------------
+        | 3. Gera ID seguro dos produtos
+        |--------------------------------------------------------------------------
+        */
+        foreach (
+            $itens
+            as &$item
+        ) {
+            $item['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int)
+                    $item['produto_id']
+                );
+        }
+        unset($item);
+        /*
+        |--------------------------------------------------------------------------
+        | 4. Calcula subtotal
+        |--------------------------------------------------------------------------
+        */
+        $subtotal = 0.0;
+        foreach (
+            $itens
+            as $item
+        ) {
+            $subtotal +=
+                (float)
+                $item['preco_unitario']
+                *
+                (int)
+                $item['quantidade'];
+        }
+        /*
+        |--------------------------------------------------------------------------
+        | 5. Frete
+        |--------------------------------------------------------------------------
+        |
+        | Nesta etapa ainda não estamos
+        | calculando o frete.
+        |
+        */
+        $frete = 0.0;
+        /*
+        |--------------------------------------------------------------------------
+        | 6. Total
+        |--------------------------------------------------------------------------
+        */
+        $total =
+            $subtotal
+            + $frete;
+        /*
+        |--------------------------------------------------------------------------
+        | 7. Parcelamento
+        |--------------------------------------------------------------------------
+        */
+        $quantidadeParcelas = 10;
+        $valorParcela =
+            $total > 0
+            ? $total
+            / $quantidadeParcelas
+            : 0.0;
+        /*
+        |--------------------------------------------------------------------------
+        | 8. Categorias do header
+        |--------------------------------------------------------------------------
+        */
+        $categorias =
+            $this->categoriaRepository
+            ->listarAtivas();
+        foreach (
+            $categorias
+            as &$categoria
+        ) {
+            $categoria['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int)
+                    $categoria['id']
+                );
+        }
+        unset($categoria);
+        /*
+        |--------------------------------------------------------------------------
+        | 9. CSRF
+        |--------------------------------------------------------------------------
+        */
+        $csrfToken =
+            CsrfCarrinho::gerar();
+        /*
+        |--------------------------------------------------------------------------
+        | 10. Mensagens flash
+        |--------------------------------------------------------------------------
+        */
+        $mensagemSucesso =
+            $_SESSION['carrinho_sucesso']
+            ?? null;
+        $mensagemErro =
+            $_SESSION['carrinho_erro']
+            ?? null;
+        unset(
+            $_SESSION['carrinho_sucesso'],
+            $_SESSION['carrinho_erro']
+        );
+        /*
+        |--------------------------------------------------------------------------
+        | 11. SEO
+        |--------------------------------------------------------------------------
+        */
+        $tituloPagina =
+            'Carrinho de Compras';
+        $descricaoPagina =
+            'Confira os produtos '
+            . 'adicionados ao seu carrinho.';
+        /*
+        |--------------------------------------------------------------------------
+        | 12. View
+        |--------------------------------------------------------------------------
+        */
+        $arquivoView =
+            APP_ROOT
+            . '/views/site/carrinho.php';
+        if (!is_file($arquivoView)) {
+            throw new RuntimeException(
+                'A página do carrinho '
+                    . 'não foi encontrada.'
             );
-
-
-    // restante do Controller
-}
-
+        }
+        require $arquivoView;
+    }
     /*
     |--------------------------------------------------------------------------
     | Adicionar produto
@@ -223,13 +335,6 @@ final class CarrinhoController
         */
         $carrinhoId =
             $this->carrinhoAtualId();
-
-        $quantidadeCarrinho =
-            $this->carrinhoRepository
-            ->totalUnidades(
-                $carrinhoId
-            );
-
         /*
         |--------------------------------------------------------------------------
         | 8. Quantidade que já existe

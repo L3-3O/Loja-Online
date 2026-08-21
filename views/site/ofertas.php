@@ -45,7 +45,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     <!-- ============================================================
          2. MENU PRINCIPAL
     ============================================================= -->
-    <?php  View::componente(
+    <?php View::componente(
         'header',
         [
             'categorias' =>
@@ -89,7 +89,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                         );
                         $precoNormal = (float) $produto['preco'];
                         $desconto = (float) $produto['percentual_oferta'];
-                        $precoOferta = $precoNormal-($precoNormal*$desconto/100);
+                        $precoOferta = $precoNormal - ($precoNormal * $desconto / 100);
                         $estoque = (int) $produto['estoque'];
                         $economia = $precoNormal - $precoOferta;
                         /*
@@ -203,28 +203,23 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                                 Ver detalhes
                                             </a>
                                             <!-- Adicionar ao carrinho -->
-                                            <?php if ($estoque > 0): ?>
-                                                <form action="<?= htmlspecialchars(
-                                                                    $baseUrl . '/carrinho/adicionar',
-                                                                    ENT_QUOTES,
-                                                                    'UTF-8'
-                                                                ) ?>" method="post">
-                                                    <input type="hidden" name="produto" value="<?= htmlspecialchars(
-                                                                                                    $produto['id_seguro'],
-                                                                                                    ENT_QUOTES,
-                                                                                                    'UTF-8'
-                                                                                                ) ?>">
-                                                    <input type="hidden" name="quantidade" value="1">
-                                                    <button type="submit" class="btn btn-success w-100">
-                                                        <i class="bi bi-cart-plus me-1"></i>
+                                            <form action="<?= htmlspecialchars($baseUrl . '/carrinho/adicionar', ENT_QUOTES, 'UTF-8') ?>" method="post">
+                                                <!-- Token de segurança -->
+                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfCarrinho ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+                                                <input type="hidden" name="produto" value="<?= htmlspecialchars($produto['id_seguro'], ENT_QUOTES, 'UTF-8') ?>">
+                                                <input type="hidden" name="quantidade" value="1">
+
+                                                <?php if (isset($estoque) && $estoque > 0): ?>
+                                                    <button type="submit" class="btn btn-primary w-100">
                                                         Adicionar ao carrinho
                                                     </button>
-                                                </form>
-                                            <?php else: ?>
-                                                <button type="button" class="btn btn-secondary" disabled>
-                                                    Produto indisponível
-                                                </button>
-                                            <?php endif; ?>
+                                                <?php else: ?>
+                                                    <button type="button" class="btn btn-secondary w-100" disabled>
+                                                        Produto indisponível
+                                                    </button>
+                                                <?php endif; ?>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
