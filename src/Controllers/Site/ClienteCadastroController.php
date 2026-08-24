@@ -9,7 +9,6 @@ use App\Repositories\CategoriaRepository;
 use App\Services\CarrinhoService;
 use RuntimeException;
 
-
 class ClienteCadastroController
 {
     public function index(): void
@@ -86,13 +85,14 @@ class ClienteCadastroController
         | 6. Localiza a View
         |--------------------------------------------------------------------------
         */
-            $carrinhoService =
+        
+$carrinhoService =
             new CarrinhoService($pdo);
+
         $quantidadeCarrinho =
             $carrinhoService->quantidade();
 
 $arquivoView =
-
             $raizProjeto
             . '/views/site/cliente_cadastro.php';
 

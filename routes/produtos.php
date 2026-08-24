@@ -16,7 +16,7 @@ return [
     ],
     [
         'method' => 'GET',
-        'path' => '/produto        /detalhes',
+        'path' => '/produto/detalhes',
         'action' => [
             ProdutosDetalhesController::class,
             'index',

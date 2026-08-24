@@ -1,34 +1,23 @@
 <?php
+
 declare(strict_types=1);
+
 use App\Helpers\View;
+
 $tituloPagina = $tituloPagina   ?? 'Cliente Cadastro';
 $descricaoPagina = $descricaoPagina ?? 'Loja online com produtos, ofertas, atendimento ao cliente e compra segura.';
-$baseUrl = defined('BASE_URL')? BASE_URL: '';
-
-$quantidadeCarrinho =
-    isset(
-        $quantidadeCarrinho
-    )
-        ? max(
-            0,
-            (int)
-            $quantidadeCarrinho
-        )
-        : 0;
-
-
-?>
-
-
+$quantidadeCarrinho = $quantidadeCarrinho ?? 0;
+$baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
         name="description"
         content="">
-    <title><?= htmlspecialchars($tituloPagina,ENT_QUOTES,'UTF-8');  ?></title>
+    <title><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8');  ?></title>
     <!--
         Caminho-base das rotas no XAMPP.
         Quando o projeto funcionar sem /public, altere para:
@@ -40,8 +29,9 @@ $quantidadeCarrinho =
         rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
         crossorigin="anonymous">
-    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css',ENT_QUOTES,'UTF-8')?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
+
 <body>
     <!-- ============================================================
          1. BARRA SUPERIOR
@@ -50,16 +40,7 @@ $quantidadeCarrinho =
     <!-- ============================================================
          2. MENU PRINCIPAL
     ============================================================= -->
-    <?php  View::componente(
-        'header',
-        [
-            'categorias' =>
-            $categorias,
-
-            'quantidadeCarrinho' =>
-            $quantidadeCarrinho,
-        ]
-    ); ?>
+    <?php View::componente('header', ['categorias' => $categorias, 'quantidadeCarrinho' => $quantidadeCarrinho,]); ?>
     <main class="py-5">
         <div class="container">
             <div class="row justify-content-center">
@@ -92,15 +73,13 @@ $quantidadeCarrinho =
                             <form
                                 action="<?= htmlspecialchars($baseUrl . '/cliente/cadastrar', ENT_QUOTES, 'UTF-8'); ?>"
                                 method="post"
-                                autocomplete="on"
-                            >
+                                autocomplete="on">
 
                                 <?php if (!empty($csrfToken)): ?>
                                     <input
                                         type="hidden"
                                         name="csrf_token"
-                                        value="<?= htmlspecialchars((string) $csrfToken, ENT_QUOTES, 'UTF-8'); ?>"
-                                    >
+                                        value="<?= htmlspecialchars((string) $csrfToken, ENT_QUOTES, 'UTF-8'); ?>">
                                 <?php endif; ?>
 
                                 <h2 class="h5 mb-3">Dados pessoais</h2>
@@ -118,8 +97,7 @@ $quantidadeCarrinho =
                                             maxlength="150"
                                             required
                                             autocomplete="name"
-                                            value="<?= htmlspecialchars((string) ($dados['nome'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['nome'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-4">
@@ -135,8 +113,7 @@ $quantidadeCarrinho =
                                             inputmode="numeric"
                                             required
                                             placeholder="000.000.000-00"
-                                            value="<?= htmlspecialchars((string) ($dados['cpf'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['cpf'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-6">
@@ -149,8 +126,7 @@ $quantidadeCarrinho =
                                             id="data_nascimento"
                                             name="data_nascimento"
                                             autocomplete="bday"
-                                            value="<?= htmlspecialchars((string) ($dados['data_nascimento'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['data_nascimento'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-6">
@@ -166,8 +142,7 @@ $quantidadeCarrinho =
                                             required
                                             autocomplete="tel"
                                             placeholder="(85) 99999-9999"
-                                            value="<?= htmlspecialchars((string) ($dados['telefone'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['telefone'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
                                 </div>
 
@@ -189,8 +164,7 @@ $quantidadeCarrinho =
                                             required
                                             autocomplete="postal-code"
                                             placeholder="00000-000"
-                                            value="<?= htmlspecialchars((string) ($dados['cep'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['cep'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-8">
@@ -205,8 +179,7 @@ $quantidadeCarrinho =
                                             maxlength="180"
                                             required
                                             autocomplete="street-address"
-                                            value="<?= htmlspecialchars((string) ($dados['logradouro'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['logradouro'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-3">
@@ -220,8 +193,7 @@ $quantidadeCarrinho =
                                             name="numero"
                                             maxlength="20"
                                             required
-                                            value="<?= htmlspecialchars((string) ($dados['numero'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['numero'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-5">
@@ -235,8 +207,7 @@ $quantidadeCarrinho =
                                             name="complemento"
                                             maxlength="100"
                                             placeholder="Apartamento, bloco..."
-                                            value="<?= htmlspecialchars((string) ($dados['complemento'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['complemento'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-4">
@@ -250,8 +221,7 @@ $quantidadeCarrinho =
                                             name="bairro"
                                             maxlength="100"
                                             required
-                                            value="<?= htmlspecialchars((string) ($dados['bairro'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['bairro'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-8">
@@ -266,8 +236,7 @@ $quantidadeCarrinho =
                                             maxlength="100"
                                             required
                                             autocomplete="address-level2"
-                                            value="<?= htmlspecialchars((string) ($dados['cidade'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['cidade'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-4">
@@ -279,8 +248,7 @@ $quantidadeCarrinho =
                                             id="estado"
                                             name="estado"
                                             required
-                                            autocomplete="address-level1"
-                                        >
+                                            autocomplete="address-level1">
                                             <option value="">Selecione</option>
                                             <?php
                                             $estados = [
@@ -319,8 +287,7 @@ $quantidadeCarrinho =
                                             ?>
                                                 <option
                                                     value="<?= htmlspecialchars($sigla, ENT_QUOTES, 'UTF-8'); ?>"
-                                                    <?= $estadoSelecionado === $sigla ? 'selected' : ''; ?>
-                                                >
+                                                    <?= $estadoSelecionado === $sigla ? 'selected' : ''; ?>>
                                                     <?= htmlspecialchars($estadoNome, ENT_QUOTES, 'UTF-8'); ?>
                                                 </option>
                                             <?php endforeach; ?>
@@ -345,8 +312,7 @@ $quantidadeCarrinho =
                                             maxlength="180"
                                             required
                                             autocomplete="email"
-                                            value="<?= htmlspecialchars((string) ($dados['email'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                        >
+                                            value="<?= htmlspecialchars((string) ($dados['email'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="col-12 col-md-6">
@@ -361,8 +327,7 @@ $quantidadeCarrinho =
                                             minlength="8"
                                             maxlength="255"
                                             required
-                                            autocomplete="new-password"
-                                        >
+                                            autocomplete="new-password">
                                         <div class="form-text">
                                             Utilize pelo menos 8 caracteres.
                                         </div>
@@ -380,8 +345,7 @@ $quantidadeCarrinho =
                                             minlength="8"
                                             maxlength="255"
                                             required
-                                            autocomplete="new-password"
-                                        >
+                                            autocomplete="new-password">
                                     </div>
                                 </div>
 
@@ -392,8 +356,7 @@ $quantidadeCarrinho =
                                         value="1"
                                         id="aceite_termos"
                                         name="aceite_termos"
-                                        required
-                                    >
+                                        required>
                                     <label class="form-check-label" for="aceite_termos">
                                         Li e aceito os termos de uso e a política de privacidade.
                                     </label>
@@ -405,8 +368,7 @@ $quantidadeCarrinho =
                                         type="checkbox"
                                         value="1"
                                         id="newsletter"
-                                        name="newsletter"
-                                    >
+                                        name="newsletter">
                                     <label class="form-check-label" for="newsletter">
                                         Desejo receber ofertas e novidades por e-mail.
                                     </label>
@@ -422,8 +384,7 @@ $quantidadeCarrinho =
                                     <span class="text-muted">Já possui cadastro?</span>
                                     <a
                                         href="<?= htmlspecialchars($baseUrl . '/cliente/login', ENT_QUOTES, 'UTF-8'); ?>"
-                                        class="text-decoration-none fw-semibold"
-                                    >
+                                        class="text-decoration-none fw-semibold">
                                         Entrar
                                     </a>
                                 </div>
@@ -440,10 +401,11 @@ $quantidadeCarrinho =
     <!-- ============================================================
          9. RODAPÉ
     ============================================================= -->
-    <?php View::componente('footer');?>
+    <?php View::componente('footer'); ?>
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

@@ -147,12 +147,15 @@ class ProdutosController
         | 6. Localiza a View
         |--------------------------------------------------------------------------
         */
-            $carrinhoService =
+        
+$carrinhoService =
             new CarrinhoService($pdo);
+
         $quantidadeCarrinho =
             $carrinhoService->quantidade();
 
-$arquivoView =  $raizProjeto
+$arquivoView =
+            $raizProjeto
             . '/views/site/produtos.php';
         if (!is_file($arquivoView)) {
             throw new RuntimeException(

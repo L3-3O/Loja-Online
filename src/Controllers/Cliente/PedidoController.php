@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controllers\Cliente;
 
 use App\Helpers\ClienteAuth;
-
 use RuntimeException;
 
 final class PedidoController
@@ -15,10 +14,7 @@ final class PedidoController
         ClienteAuth::exigirLogin();
 
 
-        
-
-$arquivoView =
-
+        $arquivoView =
             APP_ROOT
             . '/views/cliente/pedidos.php';
 
@@ -41,10 +37,7 @@ $arquivoView =
         ClienteAuth::exigirLogin();
 
 
-        
-
-$arquivoView =
-
+        $arquivoView =
             APP_ROOT
             . '/views/cliente/pedido.php';
 
