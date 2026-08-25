@@ -49,6 +49,10 @@ $statusBadges = [
                                 <input type="text" class="form-control" name="busca" id="buscarPedido" placeholder="Código do pedido" value="<?= htmlspecialchars($busca ?? '') ?>">
                             </div>
                         </div>
+
+                        <?php 
+                        $status=$status??'0';
+                        ?>
                         <div class="col-12 col-md-4">
                             <label for="statusPedido" class="form-label">Status</label>
                             <select class="form-select" name="status" id="statusPedido">
