@@ -65,9 +65,9 @@ $csrfToken =
                     <a
                         class="nav-link"
                         href="<?= BASE_URL ?>/">
-                        <i class="bi bi-speedometer2 me-1"></i>
+                        <i class="bi bi-house-fill"></i>
 
-                        Site
+                        Home
                     </a>
 
                 </li>
@@ -79,7 +79,7 @@ $csrfToken =
                         
                         <i class="bi bi-cart3 me-1"></i>
 
-                        
+                        Carrinho
                     </a>
 
                 </li>
