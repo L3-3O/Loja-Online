@@ -15,7 +15,6 @@ final class EnderecoController
 
     public function __construct()
     {
-        // Instancia a conexão com o banco de dados diretamente
         $pdo = new PDO(
             'mysql:host=127.0.0.1;dbname=loja_virtual_db;charset=utf8mb4',
             'root',
@@ -34,7 +33,7 @@ final class EnderecoController
         ClienteAuth::exigirLogin();
         $clienteId = ClienteAuth::id();
 
-        // Processamento dos formulários (Salvar, Definir Principal, Excluir)
+        // Processamento dos formulários POST (Salvar/Editar, Definir Principal, Excluir)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $acao = $_POST['acao'] ?? '';
 
@@ -70,8 +69,16 @@ final class EnderecoController
                 }
             }
 
-            header('Location: ' . $_SERVER['REQUEST_URI']);
+            // Redireciona para evitar reenvio de formulário ao atualizar a página
+            header('Location: /cliente/enderecos');
             exit;
+        }
+
+        // Verifica se há pedido de edição via GET (?editar=ID)
+        $enderecoEdicao = null;
+        if (isset($_GET['editar'])) {
+            $idEditar = (int) $_GET['editar'];
+            $enderecoEdicao = $this->repository->buscarPorIdECliente($idEditar, $clienteId);
         }
 
         $enderecos = $this->repository->listarPorCliente($clienteId);

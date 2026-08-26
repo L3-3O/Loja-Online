@@ -88,6 +88,13 @@ return [
             EnderecoController::class,
             'index',
         ],
+    ],[
+        'method' => 'GET',
+        'path' => '/cliente/enderecos',
+        'action' => [
+            EnderecoController::class,
+            'index',
+        ],
     ],
     [
         'method' => 'GET',
