@@ -1,10 +1,12 @@
 <?php
 declare(strict_types=1);
+
 use App\Controllers\Cliente\ClienteController;
 use App\Controllers\Cliente\ClienteLoginController;
 use App\Controllers\Cliente\EnderecoController;
 use App\Controllers\Cliente\PedidoController;
 use App\Controllers\Cliente\PerfilController;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -74,8 +76,7 @@ return [
     ],
     [
         'method' => 'POST',
-        'path' =>
-        '/cliente/perfil/atualizar',
+        'path' => '/cliente/perfil/atualizar',
         'action' => [
             ClienteController::class,
             'atualizarPerfil',
@@ -88,8 +89,9 @@ return [
             EnderecoController::class,
             'index',
         ],
-    ],[
-        'method' => 'GET',
+    ],
+    [
+        'method' => 'POST',
         'path' => '/cliente/enderecos',
         'action' => [
             EnderecoController::class,

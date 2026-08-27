@@ -18,15 +18,13 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
     <title><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8') ?></title>
     <base href="/loja-online/public/">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css', ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="assets/css/site.css">
 </head>
 
 <body>
-    <!-- 1. BARRA SUPERIOR -->
-    <?php View::componente('sections/barraSuperior'); ?>
 
-    <!-- 2. MENU PRINCIPAL -->
-    <?php View::componente('header', ['categorias' => $categorias, 'quantidadeCarrinho' => $quantidadeCarrinho]); ?>
+    <?php View::componenteCliente('nav'); ?>
 
     <main class="py-5 bg-light">
         <div class="container">
@@ -40,7 +38,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
                             <h2 class="h5 card-title mb-0">Cadastrar Novo Endereço</h2>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="<?= $baseUrl ?>/cliente/enderecos">
+                            <form method="POST" action="">
                                 <input type="hidden" name="acao" value="salvar">
 
                                 <div class="mb-3">
@@ -134,7 +132,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
                                         </p>
 
                                         <div class="d-flex gap-2 pt-2 border-top">
-                                            <!-- Botão Editar (Abre Modal) -->
+                                            <!-- Botão Editar -->
                                             <button type="button" 
                                                     class="btn btn-sm btn-outline-primary"
                                                     data-bs-toggle="modal" 
@@ -163,7 +161,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
                                                 </form>
                                             <?php endif; ?>
 
-                                            <!-- Botão Excluir (Abre Modal) -->
+                                            <!-- Botão Excluir -->
                                             <button type="button" 
                                                     class="btn btn-sm btn-outline-danger ms-auto"
                                                     data-bs-toggle="modal" 
@@ -187,9 +185,9 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
     <div class="modal fade" id="modalEditarEndereco" tabindex="-1" aria-labelledby="modalEditarEnderecoLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form method="POST" action="<?=$baseUrl  ?>/cliente/enderecos">
+                <form method="POST" action="">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalEditarEnderecoLabel">Editar Endereço**</h5>
+                        <h5 class="modal-title" id="modalEditarEnderecoLabel">Editar Endereço</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body">
@@ -264,7 +262,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
     <div class="modal fade" id="modalExcluirEndereco" tabindex="-1" aria-labelledby="modalExcluirEnderecoLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form method="POST" action="<?= $baseUrl ?>/cliente/enderecos">
+                <form method="POST" action="">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalExcluirEnderecoLabel">Confirmar Exclusão</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -283,14 +281,12 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
         </div>
     </div>
 
-    <!-- 3. RODAPÉ -->
     <?php View::componente('footer'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Preenchimento do Modal de Edição
             const modalEditar = document.getElementById('modalEditarEndereco');
             if (modalEditar) {
                 modalEditar.addEventListener('show.bs.modal', function (event) {
@@ -310,7 +306,6 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
                 });
             }
 
-            // Preenchimento do Modal de Exclusão
             const modalExcluir = document.getElementById('modalExcluirEndereco');
             if (modalExcluir) {
                 modalExcluir.addEventListener('show.bs.modal', function (event) {

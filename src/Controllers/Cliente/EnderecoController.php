@@ -33,7 +33,6 @@ final class EnderecoController
         ClienteAuth::exigirLogin();
         $clienteId = ClienteAuth::id();
 
-        // Processamento dos formulários POST (Salvar/Editar, Definir Principal, Excluir)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $acao = $_POST['acao'] ?? '';
 
@@ -69,12 +68,11 @@ final class EnderecoController
                 }
             }
 
-            // Redireciona para evitar reenvio de formulário ao atualizar a página
-            header('Location: /cliente/enderecos');
+            $baseUrl = defined('BASE_URL') ? BASE_URL : '/loja-online/public';
+            header('Location: ' . $baseUrl . '/cliente/enderecos');
             exit;
         }
 
-        // Verifica se há pedido de edição via GET (?editar=ID)
         $enderecoEdicao = null;
         if (isset($_GET['editar'])) {
             $idEditar = (int) $_GET['editar'];
