@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use App\Controllers\Cliente\ClienteController;
@@ -76,7 +77,8 @@ return [
     ],
     [
         'method' => 'POST',
-        'path' => '/cliente/perfil/atualizar',
+        'path' =>
+        '/cliente/perfil/atualizar',
         'action' => [
             ClienteController::class,
             'atualizarPerfil',
@@ -92,12 +94,30 @@ return [
     ],
     [
         'method' => 'POST',
-        'path' => '/cliente/enderecos',
+        'path' => '/cliente/endereco/editar',
         'action' => [
             EnderecoController::class,
-            'index',
+            'editar',
         ],
     ],
+
+    [
+        'method' => 'POST',
+        'path' => '/cliente/endereco/cadastrar',
+        'action' => [
+            EnderecoController::class,
+            'cadastrar',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/cliente/endereco/excluir',
+        'action' => [
+            EnderecoController::class,
+            'excluir',
+        ],
+    ],
+
     [
         'method' => 'GET',
         'path' => '/cliente/pedidos',
@@ -120,6 +140,14 @@ return [
         'action' => [
             PerfilController::class,
             'seguranca',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/cliente/seguranca/senha',
+        'action' => [
+            PerfilController::class,
+            'alterarSenha',
         ],
     ],
 ];

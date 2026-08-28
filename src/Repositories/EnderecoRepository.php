@@ -5,90 +5,251 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use PDO;
+use RuntimeException;
 
 final class EnderecoRepository
 {
     private PDO $pdo;
 
-    public function __construct(PDO $pdo)
-    {
+
+    public function __construct(
+        PDO $pdo
+    ) {
         $this->pdo = $pdo;
     }
 
-    public function listarPorCliente(int $clienteId): array
-    {
-        $sql = 'SELECT * FROM enderecos WHERE cliente_id = :cliente_id ORDER BY principal DESC, id DESC';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
-        $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function buscarPorIdECliente(int $id, int $clienteId): ?array
-    {
-        $sql = 'SELECT * FROM enderecos WHERE id = :id AND cliente_id = :cliente_id LIMIT 1';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $res = $stmt->fetch(PDO::FETCH_ASSOC);
-        return is_array($res) ? $res : null;
-    }
-
-    public function cadastrar(int $clienteId, array $dados): int
-    {
-        $principal = (!empty($dados['principal']) || $this->contarPorCliente($clienteId) === 0) ? 1 : 0;
-
-        if ($principal === 1) {
-            $this->removerPrincipalAnterior($clienteId);
-        }
+    /**
+     * Lista todos os endereços de um cliente.
+     */
+    public function listarPorCliente(
+        int $clienteId
+    ): array {
 
         $sql = '
-            INSERT INTO enderecos (
-                cliente_id, identificacao, destinatario, cep, logradouro,
-                numero, complemento, bairro, cidade, estado, principal
-            ) VALUES (
-                :cliente_id, :identificacao, :destinatario, :cep, :logradouro,
-                :numero, :complemento, :bairro, :cidade, :estado, :principal
-            )
+            SELECT
+                id,
+                cliente_id,
+                identificacao,
+                destinatario,
+                cep,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                principal,
+                criado_em,
+                atualizado_em
+
+            FROM enderecos
+
+            WHERE cliente_id = :cliente_id
+
+            ORDER BY
+                principal DESC,
+                id DESC
         ';
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            ':cliente_id' => $clienteId,
-            ':identificacao' => !empty($dados['identificacao']) ? $dados['identificacao'] : 'Endereço principal',
-            ':destinatario' => $dados['destinatario'],
-            ':cep' => $dados['cep'],
-            ':logradouro' => $dados['logradouro'],
-            ':numero' => $dados['numero'],
-            ':complemento' => !empty($dados['complemento']) ? $dados['complemento'] : null,
-            ':bairro' => $dados['bairro'],
-            ':cidade' => $dados['cidade'],
-            ':estado' => strtoupper($dados['estado']),
-            ':principal' => $principal
-        ]);
 
-        return (int) $this->pdo->lastInsertId();
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->bindValue(
+            ':cliente_id',
+            $clienteId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->execute();
+
+
+        return $consulta->fetchAll();
     }
 
-    public function cadastrarPrincipal(int $clienteId, array $dados): int
+
+    /**
+     * Busca um endereço específico pertencente ao cliente.
+     */
+    public function buscarPorId(
+        int $id,
+        int $clienteId
+    ): ?array {
+
+        $sql = '
+            SELECT
+                id,
+                cliente_id,
+                identificacao,
+                destinatario,
+                cep,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                principal,
+                criado_em,
+                atualizado_em
+
+            FROM enderecos
+
+            WHERE id = :id
+
+              AND cliente_id = :cliente_id
+
+            LIMIT 1
+        ';
+
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->bindValue(
+            ':id',
+            $id,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->bindValue(
+            ':cliente_id',
+            $clienteId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->execute();
+
+
+        $endereco =
+            $consulta->fetch();
+
+
+        return is_array(
+            $endereco
+        )
+            ? $endereco
+            : null;
+    }
+
+
+    /**
+     * Cadastra um novo endereço.
+     *
+     * Se principal = true, remove o principal anterior
+     * antes de cadastrar o novo.
+     */
+    public function cadastrar(array $dados): bool
     {
-        return $this->cadastrar($clienteId, array_merge($dados, ['principal' => 1]));
+        $sql = "INSERT INTO enderecos (cliente_id, identificacao, destinatario, cep, logradouro, numero, complemento, bairro, cidade, estado, principal) 
+            VALUES (:cliente_id, :identificacao, :destinatario, :cep, :logradouro, :numero, :complemento, :bairro, :cidade, :estado, :principal)";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':cliente_id', $dados['cliente_id'], \PDO::PARAM_INT);
+        $stmt->bindValue(':identificacao', $dados['identificacao']);
+        $stmt->bindValue(':destinatario', $dados['destinatario']);
+        $stmt->bindValue(':cep', $dados['cep']);
+        $stmt->bindValue(':logradouro', $dados['logradouro']);
+        $stmt->bindValue(':numero', $dados['numero']);
+        $stmt->bindValue(':complemento', $dados['complemento']);
+        $stmt->bindValue(':bairro', $dados['bairro']);
+        $stmt->bindValue(':cidade', $dados['cidade']);
+        $stmt->bindValue(':estado', $dados['estado']);
+        $stmt->bindValue(':principal', $dados['principal'], \PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public function desmarcarPrincipaisDoCliente(int $clienteId): bool
+    {
+        $sql = "UPDATE enderecos SET principal = 0 WHERE cliente_id = :cliente_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':cliente_id', $clienteId, \PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+
+    /**
+     * Mantém compatibilidade com o cadastro
+     * do endereço principal utilizado atualmente.
+     */
+    public function cadastrarPrincipal(
+        int $clienteId,
+        array $dados
+    ): int {
+
+        $dados['identificacao'] =
+            'Endereço principal';
+
+        $dados['principal'] =
+            true;
+
+
+        return $this->cadastrar(
+            $clienteId,
+            [
+                'identificacao' =>
+                $dados['identificacao'],
+
+                'destinatario' =>
+                $dados['nome'],
+
+                'cep' =>
+                $dados['cep'],
+
+                'logradouro' =>
+                $dados['logradouro'],
+
+                'numero' =>
+                $dados['numero'],
+
+                'complemento' =>
+                $dados['complemento'] ?? '',
+
+                'bairro' =>
+                $dados['bairro'],
+
+                'cidade' =>
+                $dados['cidade'],
+
+                'estado' =>
+                $dados['estado'],
+
+                'principal' =>
+                true,
+            ]
+        );
+    }
+
+
+    /**
+     * Atualiza um endereço pertencente ao cliente.
+     */
+    public function buscarPorIdECliente(int $id, int $clienteId): ?array
+    {
+        $sql = "SELECT * FROM enderecos WHERE id = :id AND cliente_id = :cliente_id LIMIT 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':cliente_id', $clienteId, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        $resultado = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $resultado ?: null;
     }
 
     public function atualizar(int $id, int $clienteId, array $dados): bool
     {
-        $principal = !empty($dados['principal']) ? 1 : 0;
-
-        if ($principal === 1) {
-            $this->removerPrincipalAnterior($clienteId);
-        }
-
-        $sql = '
-            UPDATE enderecos SET
-                identificacao = :identificacao,
+        $sql = "UPDATE enderecos 
+            SET identificacao = :identificacao,
                 destinatario = :destinatario,
                 cep = :cep,
                 logradouro = :logradouro,
@@ -96,93 +257,266 @@ final class EnderecoRepository
                 complemento = :complemento,
                 bairro = :bairro,
                 cidade = :cidade,
-                estado = :estado,
-                principal = :principal
-            WHERE id = :id AND cliente_id = :cliente_id
+                estado = :estado
+            WHERE id = :id AND cliente_id = :cliente_id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':identificacao', $dados['identificacao']);
+        $stmt->bindValue(':destinatario', $dados['destinatario']);
+        $stmt->bindValue(':cep', $dados['cep']);
+        $stmt->bindValue(':logradouro', $dados['logradouro']);
+        $stmt->bindValue(':numero', $dados['numero']);
+        $stmt->bindValue(':complemento', $dados['complemento']);
+        $stmt->bindValue(':bairro', $dados['bairro']);
+        $stmt->bindValue(':cidade', $dados['cidade']);
+        $stmt->bindValue(':estado', $dados['estado']);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':cliente_id', $clienteId, \PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+
+
+
+    /**
+     * Exclui um endereço pertencente ao cliente.
+     */
+   public function excluir(int $id, int $clienteId): bool
+{
+    $sql = "DELETE FROM enderecos WHERE id = :id AND cliente_id = :cliente_id";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+    $stmt->bindValue(':cliente_id', $clienteId, \PDO::PARAM_INT);
+
+    return $stmt->execute();
+}
+
+
+    /**
+     * Define um endereço como principal.
+     *
+     * Primeiro remove o principal atual
+     * e depois define o endereço informado.
+     */
+    public function definirPrincipal(
+        int $id,
+        int $clienteId
+    ): bool {
+
+        $this->pdo->beginTransaction();
+
+
+        try {
+
+            /*
+             * Confirma que o endereço pertence
+             * ao cliente.
+             */
+            $endereco =
+                $this->buscarPorId(
+                    $id,
+                    $clienteId
+                );
+
+
+            if ($endereco === null) {
+
+                $this->pdo->rollBack();
+
+                return false;
+            }
+
+
+            /*
+             * Remove o principal atual.
+             */
+            $this->removerPrincipal(
+                $clienteId
+            );
+
+
+            /*
+             * Define o endereço escolhido
+             * como principal.
+             */
+            $sql = '
+                UPDATE enderecos
+
+                SET principal = 1
+
+                WHERE id = :id
+
+                  AND cliente_id = :cliente_id
+            ';
+
+
+            $consulta =
+                $this->pdo
+                ->prepare($sql);
+
+
+            $consulta->execute([
+
+                'id' =>
+                $id,
+
+                'cliente_id' =>
+                $clienteId,
+            ]);
+
+
+            $alterado =
+                $consulta->rowCount() > 0;
+
+
+            $this->pdo->commit();
+
+
+            return $alterado;
+        } catch (\Throwable $e) {
+
+            if (
+                $this->pdo
+                ->inTransaction()
+            ) {
+                $this->pdo->rollBack();
+            }
+
+
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Remove o endereço principal atual do cliente.
+     */
+    private function removerPrincipal(
+        int $clienteId
+    ): void {
+
+        $sql = '
+            UPDATE enderecos
+
+            SET principal = 0
+
+            WHERE cliente_id = :cliente_id
+
+              AND principal = 1
         ';
 
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':id' => $id,
-            ':cliente_id' => $clienteId,
-            ':identificacao' => !empty($dados['identificacao']) ? $dados['identificacao'] : 'Endereço principal',
-            ':destinatario' => $dados['destinatario'],
-            ':cep' => $dados['cep'],
-            ':logradouro' => $dados['logradouro'],
-            ':numero' => $dados['numero'],
-            ':complemento' => !empty($dados['complemento']) ? $dados['complemento'] : null,
-            ':bairro' => $dados['bairro'],
-            ':cidade' => $dados['cidade'],
-            ':estado' => strtoupper($dados['estado']),
-            ':principal' => $principal
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->execute([
+
+            'cliente_id' =>
+            $clienteId,
         ]);
     }
 
-    public function definirPrincipal(int $id, int $clienteId): void
-    {
-        $this->removerPrincipalAnterior($clienteId);
 
-        $sql = 'UPDATE enderecos SET principal = 1 WHERE id = :id AND cliente_id = :cliente_id';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            ':id' => $id,
-            ':cliente_id' => $clienteId
-        ]);
-    }
+    /**
+     * Conta a quantidade de endereços
+     * cadastrados para o cliente.
+     */
+    public function contarPorCliente(
+        int $clienteId
+    ): int {
 
-    public function excluir(int $id, int $clienteId): bool
-    {
-        $endereco = $this->buscarPorIdECliente($id, $clienteId);
-        if (!$endereco) {
-            return false;
-        }
-
-        $sql = 'DELETE FROM enderecos WHERE id = :id AND cliente_id = :cliente_id';
-        $stmt = $this->pdo->prepare($sql);
-        $deleted = $stmt->execute([':id' => $id, ':cliente_id' => $clienteId]);
-
-        if ($deleted && (int)$endereco['principal'] === 1) {
-            $sqlNovoPrincipal = 'UPDATE enderecos SET principal = 1 WHERE cliente_id = :cliente_id ORDER BY id DESC LIMIT 1';
-            $stmtNp = $this->pdo->prepare($sqlNovoPrincipal);
-            $stmtNp->execute([':cliente_id' => $clienteId]);
-        }
-
-        return $deleted;
-    }
-
-    private function removerPrincipalAnterior(int $clienteId): void
-    {
-        $sql = 'UPDATE enderecos SET principal = 0 WHERE cliente_id = :cliente_id';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':cliente_id' => $clienteId]);
-    }
-
-    public function contarPorCliente(int $clienteId): int
-    {
-        $sql = 'SELECT COUNT(*) FROM enderecos WHERE cliente_id = :cliente_id';
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return (int) $stmt->fetchColumn();
-    }
-
-    public function buscarPrincipalPorCliente(int $clienteId): ?array
-    {
         $sql = '
-            SELECT id, identificacao, destinatario, cep, logradouro, numero, complemento, bairro, cidade, estado, principal
+            SELECT COUNT(*)
+
             FROM enderecos
-            WHERE cliente_id = :cliente_id AND principal = 1
+
+            WHERE cliente_id = :cliente_id
+        ';
+
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->bindValue(
+            ':cliente_id',
+            $clienteId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->execute();
+
+
+        return (int)
+        $consulta
+            ->fetchColumn();
+    }
+
+
+    /**
+     * Busca o endereço principal do cliente.
+     */
+    public function buscarPrincipalPorCliente(
+        int $clienteId
+    ): ?array {
+
+        $sql = '
+            SELECT
+                id,
+                cliente_id,
+                identificacao,
+                destinatario,
+                cep,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                principal,
+                criado_em,
+                atualizado_em
+
+            FROM enderecos
+
+            WHERE cliente_id = :cliente_id
+
+              AND principal = 1
+
             ORDER BY id DESC
+
             LIMIT 1
         ';
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
-        $stmt->execute();
 
-        $endereco = $stmt->fetch(PDO::FETCH_ASSOC);
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
 
-        return is_array($endereco) ? $endereco : null;
+
+        $consulta->bindValue(
+            ':cliente_id',
+            $clienteId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->execute();
+
+
+        $endereco =
+            $consulta->fetch();
+
+
+        return is_array(
+            $endereco
+        )
+            ? $endereco
+            : null;
     }
 }
