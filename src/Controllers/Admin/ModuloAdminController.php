@@ -489,6 +489,141 @@ final class ModuloAdminController
 
     public function categorias(): void { $this->carregarView('categorias'); }
 
+    /**
+     * Exibe a listagem de categorias com suporte a pesquisa.
+     */
+    public function categoriasadmin(): void
+    {
+        $raizProjeto = dirname(__DIR__, 3);
+        require_once $raizProjeto . '/database/conexao.php';
+        $pdo = \Config::connect();
+
+        $repository = new \App\Repositories\AdminCategoriasRepository($pdo);
+        
+        $busca = trim($_GET['q'] ?? '');
+        $categorias = $repository->listarTodas($busca);
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $mensagemSucesso = $_SESSION['sucesso'] ?? null;
+        $mensagemErro = $_SESSION['erro'] ?? null;
+        unset($_SESSION['sucesso'], $_SESSION['erro']);
+
+        $arquivoView = $raizProjeto . '/views/admin/categorias.php';
+
+        if (!is_file($arquivoView)) {
+            throw new \RuntimeException('A página de categorias não foi encontrada.');
+        }
+
+        require $arquivoView;
+    }
+
+    /**
+     * Salva uma nova categoria via POST.
+     */
+    public function categoriaSalvar(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $nome = trim($_POST['nome'] ?? '');
+        $descricao = trim($_POST['descricao'] ?? '');
+        $ativo = (int) ($_POST['ativo'] ?? 1);
+
+        if ($nome === '') {
+            $_SESSION['erro'] = 'O nome da categoria é obrigatório.';
+            header('Location: /loja-online/public/admin/categorias');
+            exit;
+        }
+
+        $raizProjeto = dirname(__DIR__, 3);
+        require_once $raizProjeto . '/database/conexao.php';
+        $pdo = \Config::connect();
+
+        $repository = new \App\Repositories\AdminCategoriasRepository($pdo);
+
+        if ($repository->criar($nome, $descricao !== '' ? $descricao : null, $ativo)) {
+            $_SESSION['sucesso'] = 'Categoria criada com sucesso!';
+        } else {
+            $_SESSION['erro'] = 'Não foi possível cadastrar a categoria.';
+        }
+
+        header('Location: /loja-online/public/admin/categorias');
+        exit;
+    }
+
+    /**
+     * Atualiza os dados de uma categoria via POST.
+     */
+    public function categoriaAtualizar(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
+        $nome = trim($_POST['nome'] ?? '');
+        $descricao = trim($_POST['descricao'] ?? '');
+        $ativo = (int) ($_POST['ativo'] ?? 1);
+
+        if ($id <= 0 || $nome === '') {
+            $_SESSION['erro'] = 'Dados inválidos para atualizar a categoria.';
+            header('Location: /loja-online/public/admin/categorias');
+            exit;
+        }
+
+        $raizProjeto = dirname(__DIR__, 3);
+        require_once $raizProjeto . '/database/conexao.php';
+        $pdo = \Config::connect();
+
+        $repository = new \App\Repositories\AdminCategoriasRepository($pdo);
+
+        if ($repository->atualizar($id, $nome, $descricao !== '' ? $descricao : null, $ativo)) {
+            $_SESSION['sucesso'] = 'Categoria atualizada com sucesso!';
+        } else {
+            $_SESSION['erro'] = 'Não foi possível atualizar a categoria.';
+        }
+
+        header('Location: /loja-online/public/admin/categorias');
+        exit;
+    }
+
+    /**
+     * Exclui uma categoria via POST.
+     */
+    public function categoriaExcluir(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
+
+        if ($id <= 0) {
+            $_SESSION['erro'] = 'ID inválido para exclusão.';
+            header('Location: /loja-online/public/admin/categorias');
+            exit;
+        }
+
+        $raizProjeto = dirname(__DIR__, 3);
+        require_once $raizProjeto . '/database/conexao.php';
+        $pdo = \Config::connect();
+
+        $repository = new \App\Repositories\AdminCategoriasRepository($pdo);
+
+        if ($repository->excluir($id)) {
+            $_SESSION['sucesso'] = 'Categoria excluída com sucesso!';
+        } else {
+            $_SESSION['erro'] = 'Erro ao tentar excluir a categoria.';
+        }
+
+        header('Location: /loja-online/public/admin/categorias');
+        exit;
+    }
+
     public function clientes(): void
     {
         $repository = $this->adminRepository();

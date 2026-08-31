@@ -112,14 +112,14 @@ return [
     | Categorias
     |--------------------------------------------------------------------------
     */
-    [
-        'method' => 'GET',
-        'path' => '/admin/categorias',
-        'action' => [
-            ModuloAdminController::class,
-            'categorias',
-        ],
-    ],
+    // [
+    //     'method' => 'GET',
+    //     'path' => '/admin/categorias',
+    //     'action' => [
+    //         ModuloAdminController::class,
+    //         'categorias',
+    //     ],
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -331,4 +331,41 @@ return [
         'clienteAtivar',
     ],
 ],
+/*
+    |--------------------------------------------------------------------------
+    | Categorias
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/categorias',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriasadmin',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/salvar',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaSalvar',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/atualizar',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaAtualizar',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/excluir',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaExcluir',
+        ],
+    ],
 ];

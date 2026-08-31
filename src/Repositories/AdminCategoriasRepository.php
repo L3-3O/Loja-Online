@@ -17,6 +17,11 @@ final class AdminCategoriasRepository
      *
      * @return array<int, array<string, mixed>>
      */
+   /**
+     * Retorna a lista de categorias filtrando por termo de busca se informado.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function listarTodas(string $busca = ''): array
     {
         $sql = "SELECT id, nome, imgcategoria, slug, descricao, ativo, criado_em, atualizado_em 
@@ -25,8 +30,9 @@ final class AdminCategoriasRepository
         $params = [];
 
         if ($busca !== '') {
-            $sql .= " WHERE nome LIKE :busca OR descricao LIKE :busca";
-            $params[':busca'] = '%' . $busca . '%';
+            $sql .= " WHERE nome LIKE :busca1 OR descricao LIKE :busca2";
+            $params[':busca1'] = '%' . $busca . '%';
+            $params[':busca2'] = '%' . $busca . '%';
         }
 
         $sql .= " ORDER BY nome ASC";
