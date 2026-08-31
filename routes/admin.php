@@ -298,4 +298,37 @@ return [
             'sair',
         ],
     ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/cliente/inativar',
+        'action' => [
+            ModuloAdminController::class,
+            'clienteInativar',
+        ],
+    ],
+    [
+        'method' => 'GET',
+        'path' => '/admin/cliente/view',
+        'action' => [
+            ModuloAdminController::class,
+            'clienteView',
+        ],
+    ],
+    [
+        'method' => 'GET',
+        'path' => '/admin/cliente/carrinho',
+        'action' => [
+            ModuloAdminController::class,
+            'clienteCarrinho',
+        ],
+    ],
+    [
+    'method' => 'POST',
+    'path' => '/admin/cliente/ativar',
+    'action' => [
+        ModuloAdminController::class,
+        'clienteAtivar',
+    ],
+],
 ];
