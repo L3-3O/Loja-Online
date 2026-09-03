@@ -36,7 +36,7 @@ final class Config
 
         $porta = (string) (
             $_ENV['DB_PORT']
-                ?? '3307'
+                ?? '3306'
         );
 
         $banco = (string) (

@@ -7,6 +7,7 @@ namespace App\Controllers\Admin;
 use App\Repositories\AdminRepository;
 use RuntimeException;
 
+
 final class AdminController
 {
     public function index(): void
