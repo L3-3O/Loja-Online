@@ -535,7 +535,7 @@ final class ModuloAdminController
 
         if ($nome === '') {
             $_SESSION['erro'] = 'O nome da categoria é obrigatório.';
-            header('Location: /loja-online/public/admin/categorias');
+            header('Location: <?= BASE_URL ?>/admin/categorias');
             exit;
         }
 
@@ -551,7 +551,7 @@ final class ModuloAdminController
             $_SESSION['erro'] = 'Não foi possível cadastrar a categoria.';
         }
 
-        header('Location: /loja-online/public/admin/categorias');
+        header('Location: <?= BASE_URL ?>/admin/categorias');
         exit;
     }
 
@@ -571,7 +571,7 @@ final class ModuloAdminController
 
         if ($id <= 0 || $nome === '') {
             $_SESSION['erro'] = 'Dados inválidos para atualizar a categoria.';
-            header('Location: /loja-online/public/admin/categorias');
+            header('Location: <?= BASE_URL ?>/admin/categorias');
             exit;
         }
 
@@ -587,7 +587,7 @@ final class ModuloAdminController
             $_SESSION['erro'] = 'Não foi possível atualizar a categoria.';
         }
 
-        header('Location: /loja-online/public/admin/categorias');
+        header('Location: <?= BASE_URL ?>/admin/categorias');
         exit;
     }
 
@@ -604,7 +604,7 @@ final class ModuloAdminController
 
         if ($id <= 0) {
             $_SESSION['erro'] = 'ID inválido para exclusão.';
-            header('Location: /loja-online/public/admin/categorias');
+            header('Location: <?= BASE_URL ?>/admin/categorias');
             exit;
         }
 
@@ -620,7 +620,7 @@ final class ModuloAdminController
             $_SESSION['erro'] = 'Erro ao tentar excluir a categoria.';
         }
 
-        header('Location: /loja-online/public/admin/categorias');
+        header('Location: <?= BASE_URL ?>/admin/categorias');
         exit;
     }
 

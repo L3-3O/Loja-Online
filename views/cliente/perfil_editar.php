@@ -19,7 +19,7 @@ use App\Helpers\View;
 
     <title>Editar Perfil | Loja Online</title>
 
-    <base href="/loja-online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <!-- Bootstrap -->
     <link

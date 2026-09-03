@@ -16,7 +16,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
     <title>Categorias | Painel Administrativo</title>
     <meta name="description" content="Painel administrativo para gerenciamento de categorias da loja.">
 
-    <base href="/loja-online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <link rel="icon" href="assets/img/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
