@@ -1,22 +1,63 @@
-# Impede a listagem automática de pastas
+# =========================================================
+# PROTEÇÃO DA APLICAÇÃO
+# =========================================================
 Options -Indexes
-
-# Bloqueia arquivos ocultos:
-# .env, .env.example, .gitignore, .htaccess etc.
+RewriteEngine On
+# =========================================================
+# BLOQUEAR ARQUIVOS OCULTOS
+# .env
+# .env.example
+# .gitignore
+# etc.
+# =========================================================
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>
-
-# Bloqueia arquivos internos conhecidos
-<FilesMatch "(?i)^(composer\.(json|lock)|README\.md)$">
+# =========================================================
+# BLOQUEAR ARQUIVOS INTERNOS
+# =========================================================
+<FilesMatch "^(composer\.(json|lock)|README\.md)$">
     Require all denied
 </FilesMatch>
-
-# Ativa o mecanismo de reescrita
-RewriteEngine On
-
-# Bloqueia diretórios ocultos internos
-RewriteRule ^(?:\.git|\.idea|\.vscode)(?:/|$) - [F,L,NC]
-
-# Bloqueia pastas internas do projeto
-RewriteRule ^(?:config|database|documentacao|routes|src|storage|vendor|views)(?:/|$) - [F,L,NC]
+# =========================================================
+# BLOQUEAR ARQUIVOS DE BACKUP / BANCO
+# =========================================================
+<FilesMatch "\.(sql|zip|bak|log|ini)$">
+    Require all denied
+</FilesMatch>
+# =========================================================
+# BLOQUEAR PASTAS INTERNAS
+# =========================================================
+RewriteRule ^(?:database|routes|src|tabelas|vendor|views)(?:/|$) - [F,L,NC]
+# =========================================================
+# ASSETS PÚBLICOS
+#
+# /loja_online/assets/...
+#             ↓
+# /loja_online/public/assets/...
+# =========================================================
+RewriteRule ^assets/(.*)$ public/assets/$1 [L,NC]
+# =========================================================
+# ROTA PRINCIPAL
+#
+# /loja_online/
+#       ↓
+# public/index.php
+# =========================================================
+RewriteRule ^$ public/index.php [QSA,L]
+# =========================================================
+# TODAS AS OUTRAS ROTAS
+#
+# /ofertas
+# /produtos
+# /cliente/login
+# /admin
+# etc.
+#
+#             ↓
+#
+# public/index.php
+# =========================================================
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ public/index.php [QSA,L]
