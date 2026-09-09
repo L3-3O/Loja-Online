@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Controllers\Admin\AdminController;
 use App\Controllers\Admin\ModuloAdminController;
+use App\Controllers\Admin\AuthController;
 
 return [
 
@@ -56,6 +57,18 @@ return [
             'produtoNovo',
         ],
     ],
+
+    [
+        'method' => 'POST',
+
+        'path' =>
+        '/admin/produto/cadastrar',
+
+        'action' => [
+            ModuloAdminController::class,
+            'produtoCadastrar',
+        ],
+    ],
     [
         'method' => 'GET',
         'path' => '/admin/produto/editar',
@@ -73,7 +86,7 @@ return [
             'produtoAtualizar',
         ],
     ],
-    
+
     [
         'method' => 'GET',
         'path' => '/admin/produto/imagens',
@@ -199,6 +212,18 @@ return [
         ],
     ],
 
+    [
+        'method' => 'POST',
+
+        'path' =>
+        '/admin/estoque/limite',
+
+        'action' => [
+            ModuloAdminController::class,
+            'estoqueLimiteAtualizar',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Notificações
@@ -241,6 +266,17 @@ return [
         ],
     ],
 
+    [
+        'method' => 'POST',
+        'path' =>
+        '/admin/configuracoes/atualizar',
+
+        'action' => [
+            ModuloAdminController::class,
+            'configuracoesAtualizar',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Perfil administrativo
@@ -254,7 +290,7 @@ return [
             'perfil',
         ],
     ],
-       [
+    [
         'method' => 'GET',
         'path' => '/admin/perfil/novo',
         'action' => [
@@ -268,6 +304,37 @@ return [
         'action' => [
             ModuloAdminController::class,
             'perfilLista',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/perfil/atualizar',
+        'action' => [
+            ModuloAdminController::class,
+            'perfilAtualizar',
+        ],
+    ],
+
+    /*
+|--------------------------------------------------------------------------
+| Master atualiza outro administrador
+|--------------------------------------------------------------------------
+*/
+    [
+        'method' => 'POST',
+        'path' => '/admin/perfil/admin/atualizar',
+        'action' => [
+            ModuloAdminController::class,
+            'adminAtualizar',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/perfil/cadastrar',
+        'action' => [
+            ModuloAdminController::class,
+            'perfilCadastrar',
         ],
     ],
 
@@ -294,7 +361,7 @@ return [
         'method' => 'POST',
         'path' => '/admin/sair',
         'action' => [
-            ModuloAdminController::class,
+            AuthController::class,
             'sair',
         ],
     ],
@@ -324,18 +391,13 @@ return [
         ],
     ],
     [
-    'method' => 'POST',
-    'path' => '/admin/cliente/ativar',
-    'action' => [
-        ModuloAdminController::class,
-        'clienteAtivar',
+        'method' => 'POST',
+        'path' => '/admin/cliente/ativar',
+        'action' => [
+            ModuloAdminController::class,
+            'clienteAtivar',
+        ],
     ],
-],
-/*
-    |--------------------------------------------------------------------------
-    | Categorias
-    |--------------------------------------------------------------------------
-    */
     [
         'method' => 'GET',
         'path' => '/admin/categorias',
@@ -344,14 +406,16 @@ return [
             'categoriasadmin',
         ],
     ],
+
     [
         'method' => 'POST',
-        'path' => '/admin/categoria/salvar',
+        'path' => '/admin/categoria/cadastrar',
         'action' => [
             ModuloAdminController::class,
-            'categoriaSalvar',
+            'categoriaCadastrar',
         ],
     ],
+
     [
         'method' => 'POST',
         'path' => '/admin/categoria/atualizar',
@@ -360,12 +424,22 @@ return [
             'categoriaAtualizar',
         ],
     ],
+
     [
         'method' => 'POST',
-        'path' => '/admin/categoria/excluir',
+        'path' => '/admin/categoria/desativar',
         'action' => [
             ModuloAdminController::class,
-            'categoriaExcluir',
+            'categoriaDesativar',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/ativar',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaAtivar',
         ],
     ],
 ];

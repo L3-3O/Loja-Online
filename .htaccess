@@ -1,8 +1,12 @@
 # =========================================================
 # PROTEÇÃO DA APLICAÇÃO
 # =========================================================
+
 Options -Indexes
+
 RewriteEngine On
+
+
 # =========================================================
 # BLOQUEAR ARQUIVOS OCULTOS
 # .env
@@ -10,41 +14,59 @@ RewriteEngine On
 # .gitignore
 # etc.
 # =========================================================
+
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>
+
+
 # =========================================================
 # BLOQUEAR ARQUIVOS INTERNOS
 # =========================================================
+
 <FilesMatch "^(composer\.(json|lock)|README\.md)$">
     Require all denied
 </FilesMatch>
+
+
 # =========================================================
 # BLOQUEAR ARQUIVOS DE BACKUP / BANCO
 # =========================================================
+
 <FilesMatch "\.(sql|zip|bak|log|ini)$">
     Require all denied
 </FilesMatch>
+
+
 # =========================================================
 # BLOQUEAR PASTAS INTERNAS
 # =========================================================
+
 RewriteRule ^(?:database|routes|src|tabelas|vendor|views)(?:/|$) - [F,L,NC]
+
+
 # =========================================================
 # ASSETS PÚBLICOS
 #
-# /loja_online/assets/...
+# /loja-online/assets/...
 #             ↓
-# /loja_online/public/assets/...
+# /loja-online/public/assets/...
 # =========================================================
+
 RewriteRule ^assets/(.*)$ public/assets/$1 [L,NC]
+RewriteRule ^imagens/(.*)$ public/imagens/$1 [L,NC]
+
 # =========================================================
 # ROTA PRINCIPAL
 #
-# /loja_online/
+# /loja-online/
 #       ↓
 # public/index.php
 # =========================================================
+
 RewriteRule ^$ public/index.php [QSA,L]
+
+
 # =========================================================
 # TODAS AS OUTRAS ROTAS
 #
@@ -58,6 +80,18 @@ RewriteRule ^$ public/index.php [QSA,L]
 #
 # public/index.php
 # =========================================================
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
 RewriteRule ^ public/index.php [QSA,L]
+
+
+RewriteEngine On
+
+# ---------------------------------------------------------
+# Arquivos estáticos existentes dentro de /public
+# ---------------------------------------------------------
+
+RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+RewriteRule ^imagens/(.*)$ public/imagens/$1 [L]

@@ -8,109 +8,293 @@ use PDO;
 
 final class AdminCategoriasRepository
 {
-    public function __construct(private readonly PDO $pdo)
+    private PDO $pdo;
+
+    public function __construct(PDO $pdo)
     {
+        $this->pdo = $pdo;
     }
 
     /**
-     * Retorna a lista de categorias filtrando por termo de busca se informado.
-     *
-     * @return array<int, array<string, mixed>>
+     * Lista categorias com filtros e quantidade de produtos vinculados.
      */
-   /**
-     * Retorna a lista de categorias filtrando por termo de busca se informado.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public function listarTodas(string $busca = ''): array
+public function listar(
+    string $busca = '',
+    string $status = ''
+): array {
+
+    $sql = "
+        SELECT
+            c.id,
+            c.nome,
+            c.imgcategoria,
+            c.slug,
+            c.descricao,
+            c.ativo,
+            c.criado_em,
+            c.atualizado_em,
+            COUNT(p.id) AS total_produtos
+
+        FROM categorias AS c
+
+        LEFT JOIN produtos AS p
+            ON p.categoria_id = c.id
+
+        WHERE 1 = 1
+    ";
+
+    $parametros = [];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filtro de pesquisa
+    |--------------------------------------------------------------------------
+    */
+    if ($busca !== '') {
+
+        $sql .= "
+            AND (
+                c.nome LIKE :busca_nome
+                OR c.slug LIKE :busca_slug
+                OR c.descricao LIKE :busca_descricao
+            )
+        ";
+
+        $termo = '%' . $busca . '%';
+
+        $parametros[':busca_nome'] =
+            $termo;
+
+        $parametros[':busca_slug'] =
+            $termo;
+
+        $parametros[':busca_descricao'] =
+            $termo;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filtro por status
+    |--------------------------------------------------------------------------
+    */
+    if ($status === 'ativo') {
+
+        $sql .= "
+            AND c.ativo = 1
+        ";
+
+    } elseif ($status === 'inativo') {
+
+        $sql .= "
+            AND c.ativo = 0
+        ";
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Agrupamento
+    |--------------------------------------------------------------------------
+    */
+    $sql .= "
+        GROUP BY
+            c.id,
+            c.nome,
+            c.imgcategoria,
+            c.slug,
+            c.descricao,
+            c.ativo,
+            c.criado_em,
+            c.atualizado_em
+
+        ORDER BY
+            c.nome ASC
+    ";
+
+    /*
+    |--------------------------------------------------------------------------
+    | Executa consulta
+    |--------------------------------------------------------------------------
+    */
+    $stmt = $this->pdo->prepare(
+        $sql
+    );
+
+    $stmt->execute(
+        $parametros
+    );
+
+    return $stmt->fetchAll(
+        PDO::FETCH_ASSOC
+    );
+}
+
+    public function buscarPorId(int $id): ?array
     {
-        $sql = "SELECT id, nome, imgcategoria, slug, descricao, ativo, criado_em, atualizado_em 
-                FROM categorias";
+        $sql = "
+            SELECT
+                id,
+                nome,
+                imgcategoria,
+                slug,
+                descricao,
+                ativo,
+                criado_em,
+                atualizado_em
+            FROM categorias
+            WHERE id = :id
+            LIMIT 1
+        ";
 
-        $params = [];
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':id' => $id,
+        ]);
 
-        if ($busca !== '') {
-            $sql .= " WHERE nome LIKE :busca1 OR descricao LIKE :busca2";
-            $params[':busca1'] = '%' . $busca . '%';
-            $params[':busca2'] = '%' . $busca . '%';
+        $categoria = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $categoria !== false
+            ? $categoria
+            : null;
+    }
+
+    public function nomeExiste(
+        string $nome,
+        ?int $ignorarId = null
+    ): bool {
+        $sql = "
+            SELECT id
+            FROM categorias
+            WHERE nome = :nome
+        ";
+
+        $parametros = [
+            ':nome' => $nome,
+        ];
+
+        if ($ignorarId !== null) {
+            $sql .= " AND id <> :ignorar_id ";
+            $parametros[':ignorar_id'] = $ignorarId;
         }
 
-        $sql .= " ORDER BY nome ASC";
+        $sql .= " LIMIT 1 ";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
+        $stmt->execute($parametros);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        return $stmt->fetchColumn() !== false;
     }
 
-    /**
-     * Cadastra uma nova categoria no banco de dados.
-     */
-    public function criar(string $nome, ?string $descricao = null, int $ativo = 1): bool
-    {
-        $slug = $this->gerarSlug($nome);
+    public function slugExiste(
+        string $slug,
+        ?int $ignorarId = null
+    ): bool {
+        $sql = "
+            SELECT id
+            FROM categorias
+            WHERE slug = :slug
+        ";
 
-        $sql = "INSERT INTO categorias (nome, slug, descricao, ativo, criado_em, atualizado_em) 
-                VALUES (:nome, :slug, :descricao, :ativo, NOW(), NOW())";
-
-        $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([
-            ':nome' => $nome,
+        $parametros = [
             ':slug' => $slug,
-            ':descricao' => $descricao,
-            ':ativo' => $ativo,
-        ]);
-    }
+        ];
 
-    /**
-     * Atualiza os dados de uma categoria existente.
-     */
-    public function atualizar(int $id, string $nome, ?string $descricao = null, int $ativo = 1): bool
-    {
-        $slug = $this->gerarSlug($nome);
+        if ($ignorarId !== null) {
+            $sql .= " AND id <> :ignorar_id ";
+            $parametros[':ignorar_id'] = $ignorarId;
+        }
 
-        $sql = "UPDATE categorias 
-                SET nome = :nome, 
-                    slug = :slug, 
-                    descricao = :descricao, 
-                    ativo = :ativo, 
-                    atualizado_em = NOW() 
-                WHERE id = :id";
+        $sql .= " LIMIT 1 ";
 
         $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($parametros);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+    public function cadastrar(array $dados): int
+    {
+        $sql = "
+            INSERT INTO categorias (
+                nome,
+                imgcategoria,
+                slug,
+                descricao,
+                ativo
+            ) VALUES (
+                :nome,
+                :imgcategoria,
+                :slug,
+                :descricao,
+                1
+            )
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            ':nome' => $dados['nome'],
+            ':imgcategoria' => $dados['imgcategoria'],
+            ':slug' => $dados['slug'],
+            ':descricao' => $dados['descricao'],
+        ]);
+
+        return (int) $this->pdo->lastInsertId();
+    }
+
+    public function atualizar(
+        int $id,
+        array $dados
+    ): bool {
+        $sql = "
+            UPDATE categorias
+            SET
+                nome = :nome,
+                imgcategoria = :imgcategoria,
+                slug = :slug,
+                descricao = :descricao
+            WHERE id = :id
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+
         return $stmt->execute([
             ':id' => $id,
-            ':nome' => $nome,
-            ':slug' => $slug,
-            ':descricao' => $descricao,
-            ':ativo' => $ativo,
+            ':nome' => $dados['nome'],
+            ':imgcategoria' => $dados['imgcategoria'],
+            ':slug' => $dados['slug'],
+            ':descricao' => $dados['descricao'],
         ]);
     }
 
-    /**
-     * Exclui uma categoria pelo ID.
-     */
-    public function excluir(int $id): bool
+    public function desativar(int $id): bool
     {
-        $sql = "DELETE FROM categorias WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        return $stmt->execute();
+        $stmt = $this->pdo->prepare("
+            UPDATE categorias
+            SET ativo = 0
+            WHERE id = :id
+              AND ativo = 1
+        ");
+
+        $stmt->execute([
+            ':id' => $id,
+        ]);
+
+        return $stmt->rowCount() > 0;
     }
 
-    /**
-     * Helper para geração do slug limpo a partir do nome.
-     */
-    private function gerarSlug(string $texto): string
+    public function ativar(int $id): bool
     {
-        $slug = mb_strtolower($texto, 'UTF-8');
-        $slug = preg_replace('/[áàãâä]/u', 'a', $slug);
-        $slug = preg_replace('/[éèêë]/u', 'e', $slug);
-        $slug = preg_replace('/[íìîï]/u', 'i', $slug);
-        $slug = preg_replace('/[óòõôö]/u', 'o', $slug);
-        $slug = preg_replace('/[úùûü]/u', 'u', $slug);
-        $slug = preg_replace('/[ç]/u', 'c', $slug);
-        $slug = preg_replace('/[^a-z0-9]/', '-', $slug);
-        return trim((string) preg_replace('/-+/', '-', $slug), '-');
+        $stmt = $this->pdo->prepare("
+            UPDATE categorias
+            SET ativo = 1
+            WHERE id = :id
+              AND ativo = 0
+        ");
+
+        $stmt->execute([
+            ':id' => $id,
+        ]);
+
+        return $stmt->rowCount() > 0;
     }
 }

@@ -40,13 +40,12 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css', ENT_QUOTES, 'UTF-8') ?>">
 
 
+
 </head>
 
 <body>
 
 
-    <i class="bi bi-person-gear"></i>
-</a>
     <!-- ============================================================
          1. BARRA SUPERIOR
     =====================   ======================================== -->
