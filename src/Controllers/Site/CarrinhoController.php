@@ -11,6 +11,10 @@ use App\Helpers\IdSeguro;
 use App\Repositories\CarrinhoRepository;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
+use App\Repositories\FreteRepository;
+use App\Services\FreteService;
+use InvalidArgumentException;
+
 use RuntimeException;
 
 final class CarrinhoController
@@ -26,6 +30,8 @@ final class CarrinhoController
         $produtoRepository;
     private CategoriaRepository
         $categoriaRepository;
+    private FreteService $freteService;
+
     /*
     |--------------------------------------------------------------------------
     | Construtor
@@ -42,6 +48,17 @@ final class CarrinhoController
             . '/database/conexao.php';
         $pdo =
             \Config::connect();
+
+        $freteRepository =
+            new FreteRepository(
+                $pdo
+            );
+
+        $this->freteService =
+            new FreteService(
+                $freteRepository
+            );
+
         /*
         |--------------------------------------------------------------------------
         | 2. Repositories
@@ -140,7 +157,37 @@ final class CarrinhoController
         | calculando o frete.
         |
         */
-        $frete = 0.0;
+        $resumoCarrinho =
+            $this->carrinhoRepository
+            ->buscarResumo(
+                $carrinhoId
+            );
+
+        $cepFrete =
+            $resumoCarrinho['cep_frete']
+            ?? null;
+
+        $frete =
+            isset(
+                $resumoCarrinho['frete']
+            )
+            ? (float)
+            $resumoCarrinho['frete']
+            : 0.0;
+
+        $prazoEntrega =
+            isset(
+                $resumoCarrinho['prazo_entrega']
+            )
+            ? (int)
+            $resumoCarrinho['prazo_entrega']
+            : null;
+
+        $freteCalculado =
+            $cepFrete !== null
+            &&
+            $cepFrete !== '';
+
         /*
         |--------------------------------------------------------------------------
         | 6. Total
@@ -733,5 +780,88 @@ final class CarrinhoController
         exit;
     }
 
-    
+    public function calcularFrete(): void
+    {
+        $csrfToken =
+            isset($_POST['csrf_token'])
+            ? (string)
+            $_POST['csrf_token']
+            : null;
+
+        if (
+            !CsrfCarrinho::validar(
+                $csrfToken
+            )
+        ) {
+            http_response_code(403);
+            exit('Solicitação inválida.');
+        }
+
+        $carrinhoId =
+            $this->carrinhoAtualId();
+
+        $quantidadeItens =
+            $this->carrinhoRepository
+            ->totalUnidades(
+                $carrinhoId
+            );
+
+        if ($quantidadeItens < 1) {
+            $this->falhar(
+                'Adicione um produto antes de calcular o frete.'
+            );
+            return;
+        }
+
+        $cep =
+            trim(
+                (string) (
+                    $_POST['cep']
+                    ?? ''
+                )
+            );
+
+        try {
+            $resultado =
+                $this->freteService
+                ->calcular(
+                    $cep
+                );
+
+            $this->carrinhoRepository
+                ->salvarFrete(
+                    $carrinhoId,
+                    $resultado['faixa_id'],
+                    $resultado['cep'],
+                    $resultado['valor'],
+                    $resultado['prazo_dias']
+                );
+
+            CsrfCarrinho::renovar();
+
+            $_SESSION['carrinho_sucesso'] =
+                'Frete calculado com sucesso. '
+                . 'Prazo estimado: '
+                . $resultado['prazo_dias']
+                . ' dias úteis.';
+        } catch (
+            InvalidArgumentException
+            | RuntimeException $erro
+        ) {
+            $this->carrinhoRepository
+                ->limparFrete(
+                    $carrinhoId
+                );
+
+            $_SESSION['carrinho_erro'] =
+                $erro->getMessage();
+        }
+
+        header(
+            'Location: '
+                . BASE_URL
+                . '/carrinho'
+        );
+        exit;
+    }
 }

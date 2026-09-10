@@ -45,4 +45,15 @@ return [
         ],
     ],
 
+    [
+        'method' => 'POST',
+        'path' =>
+        '/carrinho/calcular-frete',
+        'action' => [
+            CarrinhoController::class,
+            'calcularFrete',
+        ],
+    ],
+
+
 ];
